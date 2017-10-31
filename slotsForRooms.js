@@ -51,9 +51,88 @@ module.exports = function slotsForRooms (rooms) {
       lastEntry.rowSpan += 1
     })
   })
-  clearBeginningEntries(slotList)
-  clearClosingEntries(slotList)
+  let startRegular = clearBeginningEntries(slotList)
+  let endRegular = clearClosingEntries(slotList)
+  reduceFullBreaks(slotList, startRegular, endRegular) 
   return slotList
+}
+
+function reduceFullBreaks (slotList, startRegular, endRegular) {
+  let formerRooms = {}
+  let fillUp
+  while (startRegular < endRegular) {
+    let slotEntry = slotList[startRegular]
+    if (fillUp) {
+      // If there is a null entry longer than the overlapping break, continue it in the
+      // next slot.
+      if (slotEntry.entry) {
+        slotEntry.entries = {}
+        slotEntry.entries[slotEntry.room] = slotEntry.entry
+        delete slotEntry.room
+      }
+      Object.keys(fillUp).forEach(room => {
+        slotEntry.entries[room] = fillUp[room]
+      })
+      fillUp = undefined
+    }
+    if (slotEntry.entry) {
+      formerRooms = {}
+      continue
+    }
+    // Apply age to the all the rooms in the room list
+    Object.keys(formerRooms).forEach(room => {
+      let roomTuple = formerRooms[room]
+      roomTuple.age++
+      roomTuple.span--
+      if (roomTuple.span === 1) {
+        delete formerRooms[room]
+      }
+    })
+    // Add all rooms in the current operation
+    Object.keys(slotEntry.entries).forEach(room => {
+      let roomEntry = slotEntry.entries[room]
+      formerRooms[room] = {
+        entry: roomEntry,
+        room: room,
+        age: 0,
+        span: roomEntry.rowSpan
+      }
+    })
+    let entries = Object.values(formerRooms)
+    let emptyEntries = entries.filter(roomEntry => roomEntry.entry.summary === null)
+    if (emptyEntries.length === entries.length && entries.length !== 1) { 
+      // Merge empty entries into one
+      slotEntry.entry = {
+        start: slotEntry.start,
+        end: slotEntry.end,
+        summary: null,
+        person: null,
+        rowSpan: 1
+      }
+      slotEntry.room = null
+      delete slotEntry.entries
+      emptyEntries.filter(roomEntry => roomEntry.age > 0).forEach(roomEntry => {
+        let rowSpan = roomEntry.entry.rowSpan
+        let newSpan = rowSpan - roomEntry.age - 1
+        if (newSpan >= 1) {
+          if (!fillUp) {
+            fillUp = {}
+          }
+          fillUp[roomEntry.room] = {
+            start: slotEntry.end,
+            end: roomEntry.entry.end,
+            summary: null,
+            person: null,
+            rowSpan: newSpan
+          }
+        }
+        roomEntry.entry.rowSpan = roomEntry.age
+        roomEntry.entry.end = slotEntry.start
+      })
+    }
+    startRegular++
+  }
+
 }
 
 function nonBreakEntries (slotEntry) {
@@ -90,7 +169,7 @@ function clearEntry (slotList, index) {
     return false
   }
   if (allEntries.length === 0) {
-    throw new Error('wtf - this case is not supposed to exist!')
+    return true
   }
   Object.keys(slotEntry.entries).forEach(room => {
     let roomEntry = slotEntry.entries[room]
@@ -122,6 +201,7 @@ function clearBeginningEntries (slotList) {
   while (clearEntry(slotList, i)) {
     i++
   }
+  return i
 }
 
 function clearClosingEntries (slotList) {
@@ -149,7 +229,7 @@ function clearClosingEntries (slotList) {
     i--
   }
   if (minIndex === slotList.length - 1 && minIndex > 0) {
-    return
+    return minIndex
   }
   let firstClosingEntry = slotList[minIndex]
   for (let i = minIndex; i >= 0; i--) {
@@ -164,5 +244,6 @@ function clearClosingEntries (slotList) {
       }
     })
   }
+  return minIndex
 }
 

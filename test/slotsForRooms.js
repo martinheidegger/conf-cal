@@ -236,3 +236,86 @@ test('test with closings and openings', t => {
   ])
   t.end()
 })
+
+test('cross empty slots', t => {
+  const slots = slotsForRooms({
+    a: [
+      {start: '10:00', end: '11:00', summary: 'x', person: null},
+      {start: '11:00', end: '14:00', summary: null, person: null},
+      {start: '14:00', end: '15:00', summary: 'y', person: null}
+    ],
+    b: [
+      {start: '10:00', end: '11:00', summary: 'a', person: null},
+      {start: '11:00', end: '12:00', summary: 'b', person: null},
+      {start: '12:00', end: '13:00', summary: null, person: null},
+      {start: '13:00', end: '14:00', summary: 'c', person: null},
+      {start: '14:00', end: '15:00', summary: 'd', person: null}
+    ]
+  })
+  t.deepEquals(slots, [
+    {
+      start: '10:00', end: '11:00', entries: {
+        a: {start: '10:00', end: '11:00', summary: 'x', person: null, rowSpan: 1},
+        b: {start: '10:00', end: '11:00', summary: 'a', person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '11:00', end: '12:00', entries: {
+        a: {start: '11:00', end: '12:00', summary: null, person: null, rowSpan: 1},
+        b: {start: '11:00', end: '12:00', summary: 'b', person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '12:00', end: '13:00', entry: {
+        start: '12:00', end: '13:00', summary: null, person: null, rowSpan: 1
+      }, room: null
+    },
+    {
+      start: '13:00', end: '14:00', entries: {
+        a: {start: '13:00', end: '14:00', summary: null, person: null, rowSpan: 1},
+        b: {start: '13:00', end: '14:00', summary: 'c', person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '14:00', end: '15:00', entries: {
+        a: {start: '14:00', end: '15:00', summary: 'y', person: null, rowSpan: 1},
+        b: {start: '14:00', end: '15:00', summary: 'd', person: null, rowSpan: 1}
+      }
+    }
+  ]) 
+  t.end()
+})
+
+test('empty slots', t => {
+  const slots = slotsForRooms({
+    a: [
+      {start: '11:00', end: '12:00', summary: 'opening', person: null},
+      {start: '13:00', end: '14:00', summary: 'closing', person: null}
+    ],
+    b: [
+      {start: '11:00', end: '12:00', summary: 'opening', person: null},
+      {start: '13:00', end: '14:00', summary: 'closing', person: null}
+    ]
+  })
+  t.deepEquals(slots, [
+    {
+      start: '11:00', end: '12:00', entries: {
+        a: {start: '11:00', end: '12:00', summary: 'opening', person: null, rowSpan: 1},
+        b: {start: '11:00', end: '12:00', summary: 'opening', person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '12:00', end: '13:00', entry: {
+        start: '12:00', end: '13:00', summary: null, person: null, rowSpan: 1
+      },
+      room: null
+    },
+    {
+      start: '13:00', end: '14:00', entries: {
+        a: {start: '13:00', end: '14:00', summary: 'closing', person: null, rowSpan: 1},
+        b: {start: '13:00', end: '14:00', summary: 'closing', person: null, rowSpan: 1}
+      }
+    }
+  ])
+  t.end()
+})
