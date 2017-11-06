@@ -222,7 +222,7 @@ test('multiple closing entries', t => {
     {
       start: '13:00',
       end: '13:10',
-      entry: 
+      entry:
         {start: '13:00', end: '13:10', summary: null, person: null, rowSpan: 1},
       room: null
     },
