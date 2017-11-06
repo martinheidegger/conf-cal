@@ -55,7 +55,10 @@ module.exports = function slotsForRooms (rooms) {
 
   // We calculate the rowspan
   applyRowSpan(roomNames, slotList)
-  return slotList
+  return {
+    rooms: roomNames,
+    slots: slotList
+  }
 }
 
 function distributeToAllSlots (roomNames, slotList) {

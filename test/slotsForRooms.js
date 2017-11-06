@@ -6,7 +6,7 @@ test('test with very simple data', t => {
     a: [{start: '11:00', end: '12:00', summary: 'x', person: null}],
     b: [{start: '11:00', end: '12:00', summary: 'y', person: null}]
   })
-  t.deepEquals(slots, [{
+  t.deepEquals(slots.slots, [{
     start: '11:00',
     end: '12:00',
     entries: {
@@ -24,7 +24,7 @@ test('single room', t => {
       {start: '12:00', end: '13:00', summary: 'y', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '11:00',
       end: '12:00',
@@ -53,7 +53,7 @@ test('opening entry', t => {
       {start: '11:00', end: '12:00', summary: 'z', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '10:00',
       end: '11:00',
@@ -84,7 +84,7 @@ test('multiple opening entries', t => {
       {start: '11:00', end: '12:00', summary: 'z', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '09:00',
       end: '10:00',
@@ -123,7 +123,7 @@ test('multiple opening entries with rowSpan', t => {
       {start: '12:00', end: '13:00', summary: 'z`', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '09:00',
       end: '10:00',
@@ -168,7 +168,7 @@ test('closing entry', t => {
       {start: '12:00', end: '13:00', summary: 'z', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '11:00',
       end: '12:00',
@@ -199,7 +199,7 @@ test('multiple closing entries', t => {
       {start: '13:00', end: '14:00', summary: 'z`', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '11:00',
       end: '12:00',
@@ -243,7 +243,7 @@ test('test with closings and openings', t => {
       {start: '11:20', end: '13:30', summary: 'f', person: 'E'}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '11:00',
       end: '11:20',
@@ -308,7 +308,7 @@ test('cross empty slots', t => {
       {start: '14:00', end: '15:00', summary: 'd', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '10:00',
       end: '11:00',
@@ -364,7 +364,7 @@ test('empty slots', t => {
       {start: '13:00', end: '14:00', summary: 'closing', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '11:00',
       end: '12:00',
@@ -408,7 +408,7 @@ test('end reductions, complex case', t => {
       {start: '11:00', end: '14:00', summary: 'r', person: null}
     ]
   })
-  t.deepEquals(slots, [
+  t.deepEquals(slots.slots, [
     {
       start: '09:00',
       end: '10:00',

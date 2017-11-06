@@ -136,7 +136,9 @@ test('slots for doc', t =>
    .then(doc => {
      const slots = doc.toSlots()
 
-     t.deepEquals(slots, [
+     t.deepEquals(slots, {
+       rooms: ['roomA', 'roomB'],
+       slots: [
        {
          start: '20171111T100000Z',
          end: '20171111T120000Z',
@@ -152,6 +154,6 @@ test('slots for doc', t =>
            roomB: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventC', person: 'Y', rowSpan: 1}
          }
        }
-     ])
+     ]})
    })
 )
