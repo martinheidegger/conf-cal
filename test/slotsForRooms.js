@@ -186,6 +186,7 @@ test('multiple closing entries', t => {
 
 
 test('test with closings and openings', t => {
+  debugger
   const slots = slotsForRooms({
     a: [
       {start: '11:00', end: '11:20', summary: 'opening', person: null},
@@ -318,4 +319,59 @@ test('empty slots', t => {
     }
   ])
   t.end()
+})
+
+test('end reductions, complex case', t => {
+  const slots = slotsForRooms({
+    a: [
+      {start: '09:00', end: '10:00', summary: 'w', person: null},
+      {start: '10:00', end: '12:00', summary: 'x', person: null}
+    ],
+    b: [
+      {start: '12:00', end: '13:00', summary: 'y', person: null},
+      {start: '14:00', end: '15:00', summary: 'z', person: null},
+      {start: '15:00', end: '16:00', summary: 'zz', person: null}
+    ],
+    c: [
+      {start: '11:00', end: '14:00', summary: 'r', person: null}
+    ]
+  })
+  t.deepEquals(slots, [
+    {
+      start: '09:00', end: '10:00', room: 'a', entry:
+        {start: '09:00', end: '10:00', summary: 'w', person: null, rowSpan: 1}
+    },
+    {
+      start: '10:00', end: '11:00', entries: {
+        a: {start: '10:00', end: '12:00', summary: 'x', person: null, rowSpan: 2},
+        b: {start: '10:00', end: '12:00', summary: null, person: null, rowSpan: 2},
+        c: {start: '10:00', end: '11:00', summary: null, person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '11:00', end: '12:00', entries: {
+        c: {start: '11:00', end: '14:00', summary: 'r', person: null, rowSpan: 3}
+      }
+    },
+    {
+      start: '12:00', end: '13:00', entries: {
+        a: {start: '12:00', end: '14:00', summary: null, person: null, rowSpan: 2},
+        b: {start: '12:00', end: '13:00', summary: 'y', person: null, rowSpan: 1},
+      }
+    },
+    {
+      start: '13:00', end: '14:00', entries: {
+        b: {start: '13:00', end: '14:00', summary: null, person: null, rowSpan: 1}
+      }
+    },
+    {
+      start: '14:00', end: '15:00', room: 'b', entry:
+        {start: '14:00', end: '15:00', summary: 'z', person: null, rowSpan: 1}
+    },
+    {
+      start: '15:00', end: '16:00', room: 'b', entry:
+        {start: '15:00', end: '16:00', summary: 'zz', person: null, rowSpan: 1}
+    } 
+  ])
+  t.end() 
 })
