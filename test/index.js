@@ -87,31 +87,31 @@ test('valid file with rooms', t =>
     t.deepEquals(data.rooms, {
       roomA: [
         {
-          start: '20171125T102000Z',
-          end: '20171125T112000Z',
+          start: '20171125T102000EST',
+          end: '20171125T112000EST',
           summary: 'Event A',
           person: 'X'
         }, {
-          start: '20171125T112000Z',
-          end: '20171125T130000Z',
+          start: '20171125T112000EST',
+          end: '20171125T130000EST',
           summary: 'Event B',
           person: null
         }, {
-          start: '20171125T131000Z',
-          end: '20171125T200000Z',
+          start: '20171125T131000EST',
+          end: '20171125T200000EST',
           person: null,
           summary: 'Event C'
         }
       ],
       roomB: [
         {
-          start: '20171125T102000Z',
-          end: '20171125T130000Z',
+          start: '20171125T102000EST',
+          end: '20171125T130000EST',
           person: null,
           summary: 'Event D'
         }, {
-          start: '20171125T131000Z',
-          end: '20171125T150000Z',
+          start: '20171125T131000EST',
+          end: '20171125T150000EST',
           person: 'Y',
           summary: 'Event E'
         }
@@ -141,18 +141,18 @@ test('slots for doc', t =>
        tz: 'America/Detroit',
        slots: [
          {
-           start: '20171111T100000Z',
-           end: '20171111T120000Z',
+           start: '20171111T100000EST',
+           end: '20171111T120000EST',
            room: 'roomA',
            entry:
-           {start: '20171111T100000Z', end: '20171111T120000Z', summary: 'eventA', person: 'X', rowSpan: 1}
+           {start: '20171111T100000EST', end: '20171111T120000EST', summary: 'eventA', person: 'X', rowSpan: 1}
          },
          {
-           start: '20171111T120000Z',
-           end: '20171111T130000Z',
+           start: '20171111T120000EST',
+           end: '20171111T130000EST',
            entries: {
-             roomA: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventB', person: null, rowSpan: 1},
-             roomB: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventC', person: 'Y', rowSpan: 1}
+             roomA: {start: '20171111T120000EST', end: '20171111T130000EST', summary: 'eventB', person: null, rowSpan: 1},
+             roomB: {start: '20171111T120000EST', end: '20171111T130000EST', summary: 'eventC', person: 'Y', rowSpan: 1}
            }
          }
        ]})

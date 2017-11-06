@@ -1,6 +1,7 @@
 const CalError = require('./CalError')
 const getTimezone = require('./getTimezone')
 const slotsForRooms = require('./slotsForRooms')
+const moment = require('moment')
 
 function processInput (apiKey, stringOrBuffer) {
   if (!stringOrBuffer) {
@@ -71,8 +72,8 @@ function processInput (apiKey, stringOrBuffer) {
         person = personParts[1]
       }
       roomData.push({
-        start: `${doc.date}T${parts[1]}${parts[2]}00Z`,
-        end: `${doc.date}T${parts[3]}${parts[4]}00Z`,
+        start: `${doc.date}T${parts[1]}${parts[2]}00`,
+        end: `${doc.date}T${parts[3]}${parts[4]}00`,
         summary,
         person: person
       })
@@ -83,12 +84,23 @@ function processInput (apiKey, stringOrBuffer) {
   checkMissing(lines.length - 1)
   return getTimezone(apiKey, doc.googleObjectId)
     .then(googleObject => {
+      applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
       doc.toSlots = function () {
         return slotsForRooms(googleObject.timeZone, this.rooms)
       }
       return doc
     })
+}
+
+function applyTimeZone (rooms, timeZone) {
+  const tz = moment.tz(timeZone).zoneAbbr()
+  Object.keys(rooms).forEach(room => {
+    rooms[room].forEach(roomEntry => {
+      roomEntry.start += tz
+      roomEntry.end += tz
+    })
+  })
 }
 
 function toPromise (input) {
