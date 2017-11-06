@@ -85,7 +85,7 @@ function processInput (apiKey, stringOrBuffer) {
     .then(googleObject => {
       doc.googleObject = googleObject
       doc.toSlots = function () {
-        return slotsForRooms(this.rooms)
+        return slotsForRooms(googleObject.timeZone, this.rooms)
       }
       return doc
     })

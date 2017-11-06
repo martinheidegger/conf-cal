@@ -1,4 +1,4 @@
-module.exports = function slotsForRooms (rooms) {
+module.exports = function slotsForRooms (timeZone, rooms) {
   let slots = {}
   const addSlot = (slotTime, entry, room) => {
     let entries = slots[slotTime]
@@ -56,6 +56,7 @@ module.exports = function slotsForRooms (rooms) {
   // We calculate the rowspan
   applyRowSpan(roomNames, slotList)
   return {
+    tz: timeZone,
     rooms: roomNames,
     slots: slotList
   }

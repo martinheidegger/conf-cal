@@ -138,6 +138,7 @@ test('slots for doc', t =>
 
      t.deepEquals(slots, {
        rooms: ['roomA', 'roomB'],
+       tz: 'America/Detroit',
        slots: [
          {
            start: '20171111T100000Z',

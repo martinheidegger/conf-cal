@@ -2,23 +2,27 @@ const test = require('tap').test
 const slotsForRooms = require('../slotsForRooms')
 
 test('test with very simple data', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [{start: '11:00', end: '12:00', summary: 'x', person: null}],
     b: [{start: '11:00', end: '12:00', summary: 'y', person: null}]
   })
-  t.deepEquals(slots.slots, [{
-    start: '11:00',
-    end: '12:00',
-    entries: {
-      a: {start: '11:00', end: '12:00', summary: 'x', person: null, rowSpan: 1},
-      b: {start: '11:00', end: '12:00', summary: 'y', person: null, rowSpan: 1}
-    }
-  }])
+  t.deepEquals(slots, {
+    tz: 'Asia/Tokyo',
+    slots: [{
+      start: '11:00',
+      end: '12:00',
+      entries: {
+        a: {start: '11:00', end: '12:00', summary: 'x', person: null, rowSpan: 1},
+        b: {start: '11:00', end: '12:00', summary: 'y', person: null, rowSpan: 1}
+      }
+    }],
+    rooms: ['a', 'b']
+  })
   t.end()
 })
 
 test('single room', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'x', person: null},
       {start: '12:00', end: '13:00', summary: 'y', person: null}
@@ -44,7 +48,7 @@ test('single room', t => {
 })
 
 test('opening entry', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'x', person: null}
     ],
@@ -74,7 +78,7 @@ test('opening entry', t => {
 })
 
 test('multiple opening entries', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'x', person: null}
     ],
@@ -112,7 +116,7 @@ test('multiple opening entries', t => {
 })
 
 test('multiple opening entries with rowSpan', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '09:00', end: '10:00', summary: 'x', person: null},
       {start: '10:00', end: '12:00', summary: 'y', person: null},
@@ -159,7 +163,7 @@ test('multiple opening entries with rowSpan', t => {
 })
 
 test('closing entry', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'x', person: null}
     ],
@@ -189,7 +193,7 @@ test('closing entry', t => {
 })
 
 test('multiple closing entries', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'x', person: null}
     ],
@@ -235,7 +239,7 @@ test('multiple closing entries', t => {
 })
 
 test('test with closings and openings', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '11:20', summary: 'opening', person: null},
       {start: '11:20', end: '12:00', summary: 'x', person: 'A'},
@@ -301,7 +305,7 @@ test('test with closings and openings', t => {
 })
 
 test('cross empty slots', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '10:00', end: '11:00', summary: 'x', person: null},
       {start: '11:00', end: '14:00', summary: null, person: null},
@@ -361,7 +365,7 @@ test('cross empty slots', t => {
 })
 
 test('empty slots', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '11:00', end: '12:00', summary: 'opening', person: null},
       {start: '13:00', end: '14:00', summary: 'closing', person: null}
@@ -401,7 +405,7 @@ test('empty slots', t => {
 })
 
 test('end reductions, complex case', t => {
-  const slots = slotsForRooms({
+  const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       {start: '09:00', end: '10:00', summary: 'w', person: null},
       {start: '10:00', end: '12:00', summary: 'x', person: null}
