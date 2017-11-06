@@ -7,7 +7,7 @@ if (!apiKey) {
 }
 
 function emptyTest (input) {
-  return confCal(apiKey, input)
+  return confCal({apiKey}, input)
     .then(() => Promise.reject(new Error('There should be an error for: "' + input + '"')))
     .catch(e => {
       if (e instanceof confCal.CalError && e.code === 'empty') {
@@ -27,7 +27,7 @@ test('empty calendar file', () =>
 )
 
 test('missing title', t =>
-  confCal(apiKey, '\nat Abbot Hall#FWztv6Nshtkn6MN-962gY46UtuA')
+  confCal({apiKey}, '\nat Abbot Hall#FWztv6Nshtkn6MN-962gY46UtuA')
   .then(() => Promise.reject(new Error('There should be an error when the title is missing"')))
   .catch(e => {
     if (!(e instanceof confCal.CalError) || e.code !== 'missing-data') {
@@ -39,7 +39,7 @@ test('missing title', t =>
 )
 
 test('missing location', t =>
-  confCal(apiKey, '\nThis is us')
+  confCal({apiKey}, '\nThis is us')
   .then(() => Promise.reject(new Error('There should be an error when the location is missing')))
   .catch(e => {
     if (!(e instanceof confCal.CalError) || e.code !== 'missing-data') {
@@ -51,7 +51,7 @@ test('missing location', t =>
 )
 
 test('valid empty file', t =>
-  confCal(apiKey, `
+  confCal({apiKey}, `
     Fancy title
     on 2017/11/25
     at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
@@ -64,7 +64,7 @@ test('valid empty file', t =>
 )
 
 test('valid file with rooms', t =>
-  confCal(apiKey, `
+  confCal({apiKey}, `
     Fancy title
     on 2017/11/25
     at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
@@ -121,7 +121,7 @@ test('valid file with rooms', t =>
 )
 
 test('slots for doc', t =>
-   confCal(apiKey, `
+   confCal({apiKey}, `
      Some Conference
      on 2017/11/11
      at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ

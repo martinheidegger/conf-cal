@@ -98,7 +98,18 @@ function toPromise (input) {
   return Promise.resolve(input)
 }
 
-const confCal = (apiKey, input) => toPromise(input)
-  .then((stringOrBuffer) => processInput(apiKey, stringOrBuffer))
+const confCal = (options, input) => {
+  if (input === null || input === undefined) {
+    return Promise.reject(new CalError('empty', 'input is missing'))
+  }
+  if (!options || typeof options !== 'object') {
+    return Promise.reject(new CalError('missing-option', 'options are missing'))
+  }
+  if (!options.apiKey) {
+    return Promise.reject(new CalError('missing-option', 'The "apiKey" options, containing a Google API key, is required to get the google object information for the location'))
+  }
+  return toPromise(input)
+   .then((stringOrBuffer) => processInput(options.apiKey, stringOrBuffer))
+}
 confCal.CalError = CalError
 module.exports = confCal
