@@ -1,6 +1,7 @@
 const CalError = require('./CalError')
 const getTimezone = require('./getTimezone')
 const slotsForRooms = require('./slotsForRooms')
+const renderSlots = require('./renderSlots')
 const moment = require('moment')
 
 function processInput (apiKey, stringOrBuffer) {
@@ -88,6 +89,17 @@ function processInput (apiKey, stringOrBuffer) {
       doc.googleObject = googleObject
       doc.toSlots = function () {
         return slotsForRooms(googleObject.timeZone, this.rooms)
+      }
+      doc.render = function (options) {
+        const slots = this.toSlots()
+        options = Object.assign({
+          header: `## ${this.title}
+at [${this.location}](${googleObject.url})`
+        }, options)
+        return renderSlots(options, slots)
+      }
+      doc.toMarkdown = function () {
+        return this.render({})
       }
       return doc
     })

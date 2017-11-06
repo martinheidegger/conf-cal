@@ -158,3 +158,29 @@ test('slots for doc', t =>
        ]})
    })
 )
+
+test('markdown rendering for doc', t =>
+  confCal({apiKey}, `
+    Some Conference
+    on 2017/11/11
+    at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:00-12:00 eventA by X
+    12:00-13:00 eventB
+
+    [roomB]
+    12:10-13:00 eventC by Y
+  `)
+  .then(doc => {
+    const markdown = doc.toMarkdown()
+    t.deepEquals(markdown, `## Some Conference
+at [Abbots place](https://maps.google.com/?q=Hell,+MI+48169,+USA&ftid=0x882334578757ad71:0xd45079770956618a)
+| | roomA | roomB |
+| --- | --- | --- |
+| 10:00-12:00 | roomA: eventA by X |
+| 12:00-12:10 | eventB | [Break] |
+| 12:10-13:00 |  | eventC by Y |
+`)
+  })
+)
