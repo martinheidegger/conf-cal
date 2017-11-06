@@ -1,9 +1,4 @@
 const test = require('tap').test
-const fs = require('fs')
-const path = require('path')
-
-const dataPath = path.join(__dirname, 'data')
-
 const confCal = require('..')
 const apiKey = process.env['GOOGLE_API_KEY']
 
@@ -83,7 +78,7 @@ test('valid file with rooms', t =>
     10:20-13:00 Event D
     13:10-15:00 Event E by Y
   `)
-  .then(data =>  {
+  .then(data => {
     t.equals(data.location, 'Fiery Hell')
     t.equals(data.date, '20171125')
     t.equals(data.title, 'Fancy title')
@@ -140,14 +135,19 @@ test('slots for doc', t =>
    `)
    .then(doc => {
      const slots = doc.toSlots()
-     
+
      t.deepEquals(slots, [
        {
-         start: '20171111T100000Z', end: '20171111T120000Z', room: 'roomA', entry: 
+         start: '20171111T100000Z',
+         end: '20171111T120000Z',
+         room: 'roomA',
+         entry:
            {start: '20171111T100000Z', end: '20171111T120000Z', summary: 'eventA', person: 'X', rowSpan: 1}
        },
        {
-         start: '20171111T120000Z', end: '20171111T130000Z', entries: {
+         start: '20171111T120000Z',
+         end: '20171111T130000Z',
+         entries: {
            roomA: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventB', person: null, rowSpan: 1},
            roomB: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventC', person: 'Y', rowSpan: 1}
          }
@@ -155,4 +155,3 @@ test('slots for doc', t =>
      ])
    })
 )
-

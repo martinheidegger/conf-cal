@@ -11,4 +11,3 @@ CalError.prototype.toString = function () {
 }
 
 module.exports = CalError
-

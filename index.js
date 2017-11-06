@@ -1,18 +1,15 @@
-const fs = require('fs')
-const path = require('path')
-const out = process.stdout
-const moment = require('moment')
 const CalError = require('./CalError')
 const getTimezone = require('./getTimezone')
 const slotsForRooms = require('./slotsForRooms')
 
 function processInput (apiKey, stringOrBuffer) {
   if (!stringOrBuffer) {
-    throw new CalError('empty', 'Input not given') 
+    throw new CalError('empty', 'Input not given')
   }
   const string = stringOrBuffer.toString()
   const lines = string.split('\n')
-  if (lines.filter(line => !/^\s*$/.test(line)).length === 0) {
+  const isEmptyLine = (line) => /^\s*$/.test(line)
+  if (lines.filter(isEmptyLine).length === lines.length) {
     throw new CalError('empty', 'Input is empty')
   }
   const rooms = {}
@@ -32,13 +29,13 @@ function processInput (apiKey, stringOrBuffer) {
   }
   let room = null
   lines.forEach((line, lineIndex) => {
-    if (/^\s*$/ig.test(line)) {
+    if (isEmptyLine(line)) {
       return // empty lines
     }
     const r = /^\s*\[(.*)\]\s*$/ig.exec(line)
     if (r) {
       room = r[1]
-      checkMissing(lineIndex) 
+      checkMissing(lineIndex)
       return
     }
     if (!room) {
@@ -64,7 +61,7 @@ function processInput (apiKey, stringOrBuffer) {
       roomData = []
       rooms[room] = roomData
     }
-    const parts = /^\s*([0-9]{2})\:([0-9]{2})-([0-9]{2})\:([0-9]{2})\s*(.*)\s*$/ig.exec(line)
+    const parts = /^\s*([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*(.*)\s*$/ig.exec(line)
     if (parts) {
       let summary = parts[5].trim()
       let person
@@ -79,7 +76,7 @@ function processInput (apiKey, stringOrBuffer) {
         summary,
         person: person
       })
-      return 
+      return
     }
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex)
   })
@@ -94,8 +91,8 @@ function processInput (apiKey, stringOrBuffer) {
     })
 }
 
-function toPromise(input) {
-  if (input instanceof Promise || input && input.then) {
+function toPromise (input) {
+  if (input instanceof Promise || (input && input.then)) {
     return input
   }
   return Promise.resolve(input)

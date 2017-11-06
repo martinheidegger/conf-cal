@@ -4,8 +4,8 @@ const fse = require('fs-extra')
 const path = require('path')
 const cacheFile = path.join(process.env.HOME, '.conf-cal.cache')
 
-let cacheData
-let cacheLookup
+let cachedData
+let cachedLookup
 const cache = fse.readJSON(cacheFile)
   .catch(e => {
     if (e.code !== 'ENOENT') {
@@ -14,13 +14,12 @@ const cache = fse.readJSON(cacheFile)
     return {}
   })
   .then(data => {
-    // Storage only for the raw data 
+    // Storage only for the raw data
     cachedData = data
-    // Storage for the raw data as well as the loading processes 
+    // Storage for the raw data as well as the loading processes
     cachedLookup = Object.assign({}, cachedData)
     return cachedLookup
   })
-
 
 let writingRequested
 let writing
@@ -81,4 +80,3 @@ module.exports = (apiKey, googleObjectId) =>
     }
     return cached
   })
-  

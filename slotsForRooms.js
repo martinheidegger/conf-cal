@@ -7,7 +7,7 @@ module.exports = function slotsForRooms (rooms) {
       slots[slotTime] = entries
     }
     if (entry) {
-      entries[room] ={
+      entries[room] = {
         start: entry.start,
         end: entry.end,
         summary: entry.summary,
@@ -50,7 +50,7 @@ module.exports = function slotsForRooms (rooms) {
   // with breaks (summary = null)
   insertBreaks(roomNames, slotList, groupsStart, groupsEnd)
 
-  // We apply horizontal full breaks  
+  // We apply horizontal full breaks
   mergeFullBreaks(slotList, groupsStart, groupsEnd)
 
   // We calculate the rowspan
@@ -80,7 +80,6 @@ function insertBreaks (roomNames, slotList, indexMin, indexMax) {
       let slotEntry = slotList[slotIndex]
       let roomEntry
       if (slotEntry.entries) {
-        let entries = Object.values(slotEntry.entries)
         roomEntry = slotEntry.entries[room]
       } else if (slotEntry.room === room) {
         roomEntry = slotEntry.entry
@@ -167,7 +166,6 @@ function mergeFullBreaks (slotList, iMin, iMax) {
       roomNames.forEach(room => {
         let roomEntry = slotEntry.entries[room]
         if (roomEntry.end > slotEntry.start) {
-          debugger
           let end = roomEntry.end
           roomEntry.end = slotEntry.start
           if (end > slotEntry.end) {
@@ -223,7 +221,7 @@ function applyRowSpan (roomNames, slotList) {
       if (applySingleRowSpan(slotEntry.entry, slotEntry.room, formerRooms)) {
         delete slotEntry.entry
         delete slotEntry.room
-      }  
+      }
     } else {
       Object.keys(slotEntry.entries).forEach(room => {
         let roomEntry = slotEntry.entries[room]
@@ -232,5 +230,5 @@ function applyRowSpan (roomNames, slotList) {
         }
       })
     }
-  }) 
+  })
 }
