@@ -139,21 +139,21 @@ test('slots for doc', t =>
      t.deepEquals(slots, {
        rooms: ['roomA', 'roomB'],
        slots: [
-       {
-         start: '20171111T100000Z',
-         end: '20171111T120000Z',
-         room: 'roomA',
-         entry:
+         {
+           start: '20171111T100000Z',
+           end: '20171111T120000Z',
+           room: 'roomA',
+           entry:
            {start: '20171111T100000Z', end: '20171111T120000Z', summary: 'eventA', person: 'X', rowSpan: 1}
-       },
-       {
-         start: '20171111T120000Z',
-         end: '20171111T130000Z',
-         entries: {
-           roomA: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventB', person: null, rowSpan: 1},
-           roomB: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventC', person: 'Y', rowSpan: 1}
+         },
+         {
+           start: '20171111T120000Z',
+           end: '20171111T130000Z',
+           entries: {
+             roomA: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventB', person: null, rowSpan: 1},
+             roomB: {start: '20171111T120000Z', end: '20171111T130000Z', summary: 'eventC', person: 'Y', rowSpan: 1}
+           }
          }
-       }
-     ]})
+       ]})
    })
 )
