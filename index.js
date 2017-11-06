@@ -94,11 +94,10 @@ function processInput (apiKey, stringOrBuffer) {
 }
 
 function applyTimeZone (rooms, timeZone) {
-  const tz = moment.tz(timeZone).zoneAbbr()
   Object.keys(rooms).forEach(room => {
     rooms[room].forEach(roomEntry => {
-      roomEntry.start += tz
-      roomEntry.end += tz
+      roomEntry.start = moment.tz(roomEntry.start, timeZone).toISOString()
+      roomEntry.end = moment.tz(roomEntry.end, timeZone).toISOString()
     })
   })
 }
