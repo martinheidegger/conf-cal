@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/martinheidegger/conf-cal/compare/v2.0.1...v2.1.0) (2017-11-06)
+
+
+### Bug Fixes
+
+* linting ([d5ea8b9](https://github.com/martinheidegger/conf-cal/commit/d5ea8b9))
+* switched to good iso format ([676e0f0](https://github.com/martinheidegger/conf-cal/commit/676e0f0))
+* using actual timezones for the provided dates ([1154296](https://github.com/martinheidegger/conf-cal/commit/1154296))
+
+
+### Features
+
+* **data:** Returning the timeZone as part of slots ([3cc5068](https://github.com/martinheidegger/conf-cal/commit/3cc5068))
+* **render:** Added flexible rendering for documents, markdown renderer included ([75989dc](https://github.com/martinheidegger/conf-cal/commit/75989dc))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/martinheidegger/conf-cal/compare/v2.0.0...v2.0.1) (2017-11-06)
 
