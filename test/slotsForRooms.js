@@ -196,7 +196,7 @@ test('multiple closing entries', t => {
     b: [
       {start: '11:00', end: '12:00', summary: 'y', person: null},
       {start: '12:00', end: '13:00', summary: 'z', person: null},
-      {start: '13:00', end: '14:00', summary: 'z`', person: null}
+      {start: '13:10', end: '14:00', summary: 'z`', person: null}
     ]
   })
   t.deepEquals(slots.slots, [
@@ -217,10 +217,17 @@ test('multiple closing entries', t => {
     },
     {
       start: '13:00',
+      end: '13:10',
+      entry: 
+        {start: '13:00', end: '13:10', summary: null, person: null, rowSpan: 1},
+      room: null
+    },
+    {
+      start: '13:10',
       end: '14:00',
       room: 'b',
       entry:
-        {start: '13:00', end: '14:00', summary: 'z`', person: null, rowSpan: 1}
+        {start: '13:10', end: '14:00', summary: 'z`', person: null, rowSpan: 1}
 
     }
   ])

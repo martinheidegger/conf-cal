@@ -131,6 +131,15 @@ function mergeEntries (slotList, index) {
     return true
   }
   if (rooms.length === 0) {
+    delete slotEntry.entries
+    slotEntry.entry = {
+      start: slotEntry.start,
+      end: slotEntry.end,
+      summary: null,
+      person: null,
+      rowSpan: 1
+    }
+    slotEntry.room = null
     // will be turned into a full break, next iteration
     return true
   }
