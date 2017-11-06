@@ -4,7 +4,10 @@
   "description": "Convenient calendar for conferences",
   "main": "index.js",
   "scripts": {
-    "test": "tap -- test/*.js"
+    "release": "standard-version",
+    "lint": "standard",
+    "test": "npm run lint && npm run unit",
+    "unit": "tap -- test/*.js"
   },
   "keywords": [
     "file-format",
@@ -21,6 +24,8 @@
     "moment": "^2.19.1"
   },
   "devDependencies": {
+    "standard": "^10.0.3",
+    "standard-version": "^4.2.0",
     "tap": "^10.7.2"
   },
   "directories": {
