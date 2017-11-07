@@ -1,15 +1,25 @@
 const moment = require('moment-timezone')
 
 function renderHeader (options, context) {
-  return `
-| | ${context.data.rooms.map(room => {
-  context.string = room
-  const result = options.escape(options, context)
-  delete context.string
-  return result
-}).join(' | ')} |
-| --- | ${context.data.rooms.map(() => '---').join(' | ')} |
-`
+  context.columns = [''].concat(context.data.rooms.map(room => {
+    context.string = room
+    const result = options.escape(options, context)
+    delete context.string
+    return result
+  }))
+  const count = context.columns.length
+  const headerA = options.renderRow(options, context)
+  let headerB = ''
+  if (options.headerSeperator) {
+    context.columns = context.columns.map(() => options.headerSeperator)
+    headerB = options.renderRow(options, context)
+  }
+  delete context.columns
+  return `${headerA}${headerB}`
+}
+
+function renderRow (options, context) {
+  return `${options.rowHeader}${context.columns.join(options.columnSeperator)}${options.rowFooter}${options.rowSeperator}`
 }
 
 function renderFullBreak (options, context) {
@@ -25,7 +35,7 @@ function escape (options, context) {
 }
 
 function renderBy (options, context) {
-  if (!context.roomEntry.person) {
+  if (!context.roomEntry || !context.roomEntry.person) {
     return ''
   }
   context.string = context.roomEntry.person
@@ -41,9 +51,8 @@ function renderRoom (options, context) {
   if (context.roomEntry.summary === null) {
     return options.renderBreak(options, context)
   }
-  let person = options.renderBy(options, context)
   context.string = context.roomEntry.summary
-  const result = `${options.escape(options, context)}${person}`
+  const result = `${options.escape(options, context)}${context.roomPerson}`
   delete context.string
   return result
 }
@@ -60,6 +69,7 @@ function renderRooms (options, context) {
     }
     context.room = slotEntry.room
     context.roomEntry = slotEntry.entry
+    context.roomPerson = options.renderBy(options, context)
     let result
     if (context.data.rooms.length === 1) {
       result = options.renderRoom(options, context)
@@ -68,20 +78,27 @@ function renderRooms (options, context) {
     }
     delete context.room
     delete context.roomEntry
+    delete context.roomPerson
     return result
   }
   return context.data.rooms.map(room => {
     context.room = room
     context.roomEntry = slotEntry.entries[room]
+    context.roomPerson = options.renderBy(options, context)
     const result = options.renderRoom(options, context)
     delete context.room
     delete context.roomEntry
+    delete context.roomPerson
     return result
-  }).join(' | ')
+  }).join(options.columnSeperator)
+
 }
 
 function renderSlot (options, context) {
-  return `| ${context.slotStart}-${context.slotEnd} | ${context.roomEntries} |`
+  context.columns = [`${context.slotStart}-${context.slotEnd}`].concat(context.roomEntries)
+  const result = options.renderRow(options, context)
+  delete context.columns
+  return result
 }
 
 function renderSlots (options, context) {
@@ -101,31 +118,40 @@ function renderSlots (options, context) {
 
       return result
     })
-    .join('\n')
+    .join('')
 }
 
 function render (options, context) {
   return `${options.header}${options.renderHeader(options, context)}${options.renderSlots(options, context)}${options.footer}`
 }
 
+const defaults = {
+  header: '\n',
+  footer: '',
+  breakWord: 'Break',
+  by: ' by ',
+  rowHeader: '| ',
+  rowFooter: ' |',
+  columnSeperator: ' | ',
+  rowSeperator: '\n',
+  headerSeperator: '---',
+  render,
+  renderRow,
+  renderHeader,
+  renderSlots,
+  renderSlot,
+  renderRooms,
+  renderRoom,
+  renderSingleRoom,
+  renderBreak,
+  renderFullBreak,
+  renderBy,
+  escape
+}
+
 module.exports = (options, slotData) => {
-  options = Object.assign({
-    header: '',
-    footer: '\n',
-    breakWord: 'Break',
-    by: ' by ',
-    render,
-    renderHeader,
-    renderSlots,
-    renderSlot,
-    renderRooms,
-    renderRoom,
-    renderSingleRoom,
-    renderBreak,
-    renderFullBreak,
-    renderBy,
-    escape
-  }, options)
+  options = Object.assign({}, defaults, options)
+  options.defaults = defaults
   const context = {
     data: slotData
   }

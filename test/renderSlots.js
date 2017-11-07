@@ -13,7 +13,7 @@ test('rendering of a single slot and a single room', (t) => {
     }]
   })
   t.equals(rendered, `
-| | a |
+|  | a |
 | --- | --- |
 | 9:00-10:00 | x |
 `)
@@ -32,7 +32,7 @@ test('rendering with escape characters in the room, summary and person', (t) => 
     }]
   })
   t.equals(rendered, `
-| | &#124;a&#124; |
+|  | &#124;a&#124; |
 | --- | --- |
 | 9:00-10:00 | &#124;x&#124; by &#124;y&#124; |
 `)
@@ -60,7 +60,7 @@ test('rendering of two slots and two rooms', (t) => {
     }]
   })
   t.equals(rendered, `
-| | a | b |
+|  | a | b |
 | --- | --- | --- |
 | 9:00-10:00 | x | 1 |
 | 10:00-11:00 | y | 2 |
@@ -150,7 +150,7 @@ test('rendering of two slots with breaks and spaces', (t) => {
     }]
   })
   t.equals(rendered, `
-| | a | b |
+|  | a | b |
 | --- | --- | --- |
 | 9:00-10:00 | a: x |
 | 10:00-11:00 | <Break> |

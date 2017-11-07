@@ -94,7 +94,8 @@ function processInput (apiKey, stringOrBuffer) {
         const slots = this.toSlots()
         options = Object.assign({
           header: `## ${this.title}
-at [${this.location}](${googleObject.url})`
+at [${this.location}](${googleObject.url})
+`
         }, options)
         return renderSlots(options, slots)
       }
