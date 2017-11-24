@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.4.0"></a>
+# [2.4.0](https://github.com/martinheidegger/conf-cal/compare/v2.3.0...v2.4.0) (2017-11-24)
+
+
+### Features
+
+* **render:** Added quickEscape to make escaping in templates easier ([71c8ad8](https://github.com/martinheidegger/conf-cal/commit/71c8ad8))
+
+
+
 <a name="2.3.0"></a>
 # [2.3.0](https://github.com/martinheidegger/conf-cal/compare/v2.2.1...v2.3.0) (2017-11-24)
 
