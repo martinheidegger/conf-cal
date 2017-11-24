@@ -7,7 +7,6 @@ function renderHeader (options, context) {
     delete context.string
     return result
   }))
-  const count = context.columns.length
   const headerA = options.renderRow(options, context)
   let headerB = ''
   if (options.headerSeperator) {
@@ -91,7 +90,6 @@ function renderRooms (options, context) {
     delete context.roomPerson
     return result
   }).join(options.columnSeperator)
-
 }
 
 function renderSlot (options, context) {
