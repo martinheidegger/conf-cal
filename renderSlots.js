@@ -1,12 +1,7 @@
 const moment = require('moment-timezone')
 
 function renderHeader (options, context) {
-  context.columns = [''].concat(context.data.rooms.map(room => {
-    context.string = room
-    const result = options.escape(options, context)
-    delete context.string
-    return result
-  }))
+  context.columns = [''].concat(context.data.rooms.map(options.quickEscape))
   const headerA = options.renderRow(options, context)
   let headerB = ''
   if (options.headerSeperator) {
@@ -132,6 +127,13 @@ function render (options, context) {
   return `${options.header}${options.renderHeader(options, context)}${options.renderSlots(options, context)}${options.footer}`
 }
 
+function quickEscape (options, context, string) {
+  context.string = string
+  const result = options.escape(options, context)
+  delete context.string
+  return result
+}
+
 const defaults = {
   header: '\n',
   footer: '',
@@ -162,6 +164,9 @@ module.exports = (options, slotData) => {
   options.defaults = defaults
   const context = {
     data: slotData
+  }
+  if (!options.quickEscape) {
+    options.quickEscape = quickEscape.bind(null, options, context)
   }
   return options.render(options, context)
 }
