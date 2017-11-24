@@ -92,8 +92,17 @@ function renderRooms (options, context) {
   }).join(options.columnSeperator)
 }
 
+function renderTime (options, context) {
+  return `${context.slotStart}-${context.slotEnd}`
+}
+
 function renderSlot (options, context) {
-  context.columns = [`${context.slotStart}-${context.slotEnd}`].concat(context.roomEntries)
+  const time = options.renderTime(options, context)
+  if (time) {
+    context.columns = [time].concat(context.roomEntries)
+  } else {
+    context.columns = context.roomEntries
+  }
   const result = options.renderRow(options, context)
   delete context.columns
   return result
@@ -138,6 +147,7 @@ const defaults = {
   renderHeader,
   renderSlots,
   renderSlot,
+  renderTime,
   renderRooms,
   renderRoom,
   renderSingleRoom,
