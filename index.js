@@ -30,6 +30,8 @@ function processInput (apiKey, stringOrBuffer) {
     }
   }
   let room = null
+  let continueLine = true
+  let indent = 0
   lines.forEach((line, lineIndex) => {
     if (isEmptyLine(line)) {
       return // empty lines
@@ -63,24 +65,48 @@ function processInput (apiKey, stringOrBuffer) {
       roomData = []
       rooms[room] = roomData
     }
-    const parts = /^\s*([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*(.*)\s*$/ig.exec(line)
+    const parts = /^(\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*(.*)\s*$/ig.exec(line)
     if (parts) {
-      let summary = parts[5].trim()
+      if (!continueLine) {
+        throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[1].length)
+      }
+      indent = parts[1].length
+      let summary = parts[6].trim()
       let person
       let personParts = /\s+by\s+(.*)$/ig.exec(summary)
       if (personParts) {
         summary = summary.substr(0, personParts.index)
         person = personParts[1]
       }
+      continueLine = !/\\$/ig.test(summary)
+      if (!continueLine) {
+        summary = summary.substr(0, summary.length - 1)
+      }
       roomData.push({
-        start: `${doc.date}T${parts[1]}${parts[2]}00`,
-        end: `${doc.date}T${parts[3]}${parts[4]}00`,
+        start: `${doc.date}T${parts[2]}${parts[3]}00`,
+        end: `${doc.date}T${parts[4]}${parts[5]}00`,
         summary,
         person: person
       })
       return
     }
-    throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex)
+    const contParts = /^(\s+)(.*)$/ig.exec(line)
+    const formerRoom = roomData[roomData.length - 1]
+    if (contParts && contParts[1].length >= (indent + 12) && formerRoom) {
+      let nextLine = contParts[2].trim()
+      if (continueLine) {
+        formerRoom.summary += '\n'
+      } else {
+        formerRoom.summary += ' '
+      }
+      continueLine = !/\\$/ig.test(nextLine)
+      if (!continueLine) {
+        nextLine = nextLine.substr(0, nextLine.length - 1)
+      }
+      formerRoom.summary += nextLine
+      return
+    }
+    throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, contParts && contParts[1].length)
   })
   checkMissing(lines.length - 1)
   return getTimezone(apiKey, doc.googleObjectId)

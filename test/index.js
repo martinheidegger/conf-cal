@@ -120,6 +120,106 @@ test('valid file with rooms', t =>
   })
 )
 
+test('valid file with multiline entries', t =>
+  confCal({apiKey}, `
+    Fancy title
+    on 2017/11/25
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A\\ by X
+                Fancy test
+                Even line endings\\
+                are funny
+    11:30-12:30 Event B
+                  and more text it is
+  `)
+  .then(data => {
+    t.equals(data.location, 'Fiery Hell')
+    t.equals(data.date, '20171125')
+    t.equals(data.title, 'Fancy title')
+    t.equals(data.googleObjectId, 'ChIJca1Xh1c0I4gRimFWCXd5UNQ')
+    t.equals(data.googleObject.timeZone, 'America/Detroit')
+    t.deepEquals(data.rooms, {
+      roomA: [
+        {
+          start: '2017-11-25T15:20:00.000Z',
+          end: '2017-11-25T16:20:00.000Z',
+          summary: 'Event A Fancy test\nEven line endings are funny',
+          person: 'X'
+        },
+        {
+          start: '2017-11-25T16:30:00.000Z',
+          end: '2017-11-25T17:30:00.000Z',
+          summary: 'Event B\nand more text it is',
+          person: null
+        }
+      ]
+    })
+  })
+)
+
+test('valid file with multiline entry with wrong indents', t =>
+  confCal({apiKey}, `
+    Fancy title
+    on 2017/11/25
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A\\ by X
+               Fancy test
+  `)
+  .then(() => Promise.reject(new Error('There should be an error when the indent is wrong"')))
+  .catch(e => {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+      return Promise.reject(e)
+    }
+    t.equals(e.line, 8)
+    t.equals(e.column, 16)
+  })
+)
+
+test('valid file with multiline entry with extension in next line', t =>
+  confCal({apiKey}, `
+    Fancy title
+    on 2017/11/25
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A\\
+    11:20-11:40 Event B
+  `)
+  .then(() => Promise.reject(new Error('There should be an error when the indent is wrong"')))
+  .catch(e => {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+      return Promise.reject(e)
+    }
+    t.equals(e.line, 7)
+    t.equals(e.column, 5)
+  })
+)
+
+test('valid file with multiline entry with extension in next line from a multiline entry', t =>
+  confCal({apiKey}, `
+    Fancy title
+    on 2017/11/25
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A
+                Fancy test\\               
+    11:20-11:40 Event B
+  `)
+  .then(() => Promise.reject(new Error('There should be an error when the indent is wrong"')))
+  .catch(e => {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+      return Promise.reject(e)
+    }
+    t.equals(e.line, 8)
+    t.equals(e.column, 5)
+  })
+)
+
 test('slots for doc', t =>
    confCal({apiKey}, `
      Some Conference
