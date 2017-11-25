@@ -3,6 +3,7 @@ const getTimezone = require('./getTimezone')
 const slotsForRooms = require('./slotsForRooms')
 const renderSlots = require('./renderSlots')
 const moment = require('moment')
+const MD_INDENT = 4
 
 function processInput (apiKey, stringOrBuffer) {
   if (!stringOrBuffer) {
@@ -92,7 +93,7 @@ function processInput (apiKey, stringOrBuffer) {
     }
     const contParts = /^(\s+)(.*)$/ig.exec(line)
     const formerRoom = roomData[roomData.length - 1]
-    if (contParts && contParts[1].length >= (indent + 12) && formerRoom) {
+    if (contParts && contParts[1].length >= (indent + MD_INDENT) && formerRoom) {
       let nextLine = contParts[2].trim()
       if (continueLine) {
         formerRoom.summary += '\n'
