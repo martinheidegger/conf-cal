@@ -20,6 +20,25 @@ test('rendering of a single slot and a single room', (t) => {
   t.end()
 })
 
+test('rendering of a single slot and a single multiline room', (t) => {
+  const rendered = renderSlots({}, {
+    rooms: ['a'],
+    tz: 'Asia/Tokyo',
+    slots: [{
+      start: '2017-11-25T00:00:00.000Z',
+      end: '2017-11-25T01:00:00.000Z',
+      room: 'a',
+      entry: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x\ny', person: null, rowSpan: 1}
+    }]
+  })
+  t.equals(rendered, `
+|  | a |
+| --- | --- |
+| 9:00-10:00 | x<br/>y |
+`)
+  t.end()
+})
+
 test('rendering with escape characters in the room, summary and person', (t) => {
   const rendered = renderSlots({}, {
     rooms: ['|a|'],

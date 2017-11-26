@@ -25,7 +25,7 @@ function renderBreak (options, context) {
 }
 
 function escape (options, context) {
-  return String(context.string).replace(/\|/g, '&#124;').replace(/\n/gm, '')
+  return String(context.string).replace(/\|/g, '&#124;').replace(/\n/gm, '<br/>')
 }
 
 function renderBy (options, context) {
@@ -45,10 +45,7 @@ function renderRoom (options, context) {
   if (context.roomEntry.summary === null) {
     return options.renderBreak(options, context)
   }
-  context.string = context.roomEntry.summary
-  const result = `${options.escape(options, context)}${context.roomPerson}`
-  delete context.string
-  return result
+  return `${options.quickEscape(context.roomEntry.summary)}${context.roomPerson}`
 }
 
 function renderSingleRoom (options, context) {
