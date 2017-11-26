@@ -128,11 +128,11 @@ test('valid file with multiline entries', t =>
 
     [roomA]
     10:20-11:20 Event A\\ by X
-                Fancy test
-                Even line endings\\
-                are funny
+        Fancy test
+        Even line endings\\
+        are funny
     11:30-12:30 Event B
-                  and more text it is
+        and more text it is
   `)
   .then(data => {
     t.equals(data.location, 'Fiery Hell')
@@ -159,6 +159,44 @@ test('valid file with multiline entries', t =>
   })
 )
 
+test('valid file with multiline entries with lists', t =>
+  confCal({apiKey}, `
+    Fancy title
+    on 2017/11/25
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A
+        - Event A1 by X
+        - Event A2 by Y
+        - Event A3\\ by Z
+            has more text
+        - Event A4 by Z'
+  `).then(data => {
+    t.equals(data.location, 'Fiery Hell')
+    t.equals(data.date, '20171125')
+    t.equals(data.title, 'Fancy title')
+    t.equals(data.googleObjectId, 'ChIJca1Xh1c0I4gRimFWCXd5UNQ')
+    t.equals(data.googleObject.timeZone, 'America/Detroit')
+    t.deepEquals(data.rooms, {
+      roomA: [
+        {
+          start: '2017-11-25T15:20:00.000Z',
+          end: '2017-11-25T16:20:00.000Z',
+          summary: 'Event A',
+          entries: [
+            {summary: 'Event A1', person: 'X'},
+            {summary: 'Event A2', person: 'Y'},
+            {summary: 'Event A3 has more text', person: 'Z'},
+            {summary: 'Event A4', person: 'Z\''}
+          ],
+          person: null
+        }
+      ]
+    })
+  })
+)
+
 test('valid file with multiline entry with wrong indents', t =>
   confCal({apiKey}, `
     Fancy title
@@ -167,7 +205,7 @@ test('valid file with multiline entry with wrong indents', t =>
 
     [roomA]
     10:20-11:20 Event A\\ by X
-               Fancy test
+       Fancy test
   `)
   .then(() => Promise.reject(new Error('There should be an error when the indent is wrong"')))
   .catch(e => {
@@ -175,7 +213,7 @@ test('valid file with multiline entry with wrong indents', t =>
       return Promise.reject(e)
     }
     t.equals(e.line, 8)
-    t.equals(e.column, 16)
+    t.equals(e.column, 8)
   })
 )
 

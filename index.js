@@ -5,6 +5,26 @@ const renderSlots = require('./renderSlots')
 const moment = require('moment')
 const MD_INDENT = 4
 
+function extractPerson (roomEntry) {
+  let personParts = /\s+by\s+(.*)$/ig.exec(roomEntry.summary)
+  if (personParts) {
+    roomEntry.summary = roomEntry.summary.substr(0, personParts.index)
+    roomEntry.person = personParts[1]
+  } else {
+    roomEntry.person = null
+  }
+  return roomEntry
+}
+
+function processFirstLine (roomEntry) {
+  extractPerson(roomEntry)
+  const continueLine = !/\\$/ig.test(roomEntry.summary)
+  if (!continueLine) {
+    roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
+  }
+  return continueLine
+}
+
 function processInput (apiKey, stringOrBuffer) {
   if (!stringOrBuffer) {
     throw new CalError('empty', 'Input not given')
@@ -73,38 +93,47 @@ function processInput (apiKey, stringOrBuffer) {
       }
       indent = parts[1].length
       let summary = parts[6].trim()
-      let person
-      let personParts = /\s+by\s+(.*)$/ig.exec(summary)
-      if (personParts) {
-        summary = summary.substr(0, personParts.index)
-        person = personParts[1]
-      }
-      continueLine = !/\\$/ig.test(summary)
-      if (!continueLine) {
-        summary = summary.substr(0, summary.length - 1)
-      }
-      roomData.push({
+      const roomEntry = {
         start: `${doc.date}T${parts[2]}${parts[3]}00`,
         end: `${doc.date}T${parts[4]}${parts[5]}00`,
-        summary,
-        person: person
-      })
+        summary
+      }
+      continueLine = processFirstLine(roomEntry)
+      roomData.push(roomEntry)
       return
     }
     const contParts = /^(\s+)(.*)$/ig.exec(line)
     const formerRoom = roomData[roomData.length - 1]
-    if (contParts && contParts[1].length >= (indent + MD_INDENT) && formerRoom) {
+    const contIndent = contParts[1].length
+    if (contParts && contIndent >= (indent + MD_INDENT) && formerRoom) {
       let nextLine = contParts[2].trim()
+      if (contIndent < (indent + MD_INDENT)) {
+        throw new CalError('invalid-data', `Multiline indents need to be properly indented, expected indent: ${indent + MD_INDENT}, actual: ${contIndent}`, lineIndex - 1, contParts[1].length)
+      } 
+      let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
       if (continueLine) {
-        formerRoom.summary += '\n'
+        const listParts = /^\-\s+(.*)$/g.exec(nextLine)
+        if (listParts) {
+          if (!formerRoom.entries) {
+            formerRoom.entries = []
+          }
+          roomEntry = {
+            summary: listParts[1].trim()
+          }
+          continueLine = processFirstLine(roomEntry)
+          formerRoom.entries.push(roomEntry)
+          return
+        } else {
+          roomEntry.summary += '\n'
+        }
       } else {
-        formerRoom.summary += ' '
+        roomEntry.summary += ' '
       }
       continueLine = !/\\$/ig.test(nextLine)
       if (!continueLine) {
         nextLine = nextLine.substr(0, nextLine.length - 1)
       }
-      formerRoom.summary += nextLine
+      roomEntry.summary += nextLine
       return
     }
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, contParts && contParts[1].length)
