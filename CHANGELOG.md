@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.5.0"></a>
+# [2.5.0](https://github.com/martinheidegger/conf-cal/compare/v2.4.0...v2.5.0) (2017-11-29)
+
+
+### Bug Fixes
+
+* **breaks:** multiline entries need breaks <br> ([baa1fc3](https://github.com/martinheidegger/conf-cal/commit/baa1fc3))
+
+
+### Features
+
+* **parser:** Added support for lists in multiline entries ([9f5e05f](https://github.com/martinheidegger/conf-cal/commit/9f5e05f))
+* **parser:** Added support for multiline calendar entries ([d24d1cf](https://github.com/martinheidegger/conf-cal/commit/d24d1cf))
+* **renderer:** Added support for lists in renderer ([43fb01f](https://github.com/martinheidegger/conf-cal/commit/43fb01f))
+
+
+
 <a name="2.4.0"></a>
 # [2.4.0](https://github.com/martinheidegger/conf-cal/compare/v2.3.0...v2.4.0) (2017-11-24)
 
