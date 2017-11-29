@@ -7,13 +7,17 @@ module.exports = function slotsForRooms (timeZone, rooms) {
       slots[slotTime] = entries
     }
     if (entry) {
-      entries[room] = {
+      const newEntry = {
         start: entry.start,
         end: entry.end,
         summary: entry.summary,
         person: entry.person,
         rowSpan: 1
       }
+      if (entry.entries) {
+        newEntry.entries = entry.entries
+      }
+      entries[room] = newEntry
     }
   }
   Object.keys(rooms).forEach((room) => {

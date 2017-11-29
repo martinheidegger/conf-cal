@@ -305,10 +305,14 @@ test('markdown rendering for doc', t =>
 
     [roomA]
     10:00-12:00 eventA by X
+        - eventA1 by X
     12:00-13:00 eventB
 
     [roomB]
     12:10-13:00 eventC by Y
+        - eventD by Z
+        - eventE
+        - eventF
   `)
   .then(doc => {
     const markdown = doc.toMarkdown()
@@ -316,9 +320,9 @@ test('markdown rendering for doc', t =>
 at [Abbots place](https://maps.google.com/?q=Hell,+MI+48169,+USA&ftid=0x882334578757ad71:0xd45079770956618a)
 |  | roomA | roomB |
 | --- | --- | --- |
-| 10:00-12:00 | roomA: eventA by X |
+| 10:00-12:00 | roomA: eventA by X<br/><ul><li>eventA1 by X</li></ul> |
 | 12:00-12:10 | eventB | [Break] |
-| 12:10-13:00 |  | eventC by Y |
+| 12:10-13:00 |  | eventC by Y<br/><ul><li>eventD by Z</li><li>eventE</li><li>eventF</li></ul> |
 `)
   })
 )

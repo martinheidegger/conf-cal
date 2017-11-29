@@ -38,6 +38,34 @@ function renderBy (options, context) {
   return result
 }
 
+function renderRoomListEntry (options, context) {
+  return `${options.listBullet}${context.roomListContent}`
+}
+
+function renderRoomListContent (options, context) {
+  const ctx = Object.assign({}, context, {
+    roomEntry: context.roomListEntry,
+    roomPerson: '',
+    roomList: ''
+  })
+  ctx.roomPerson = options.renderBy(options, ctx)
+  return options.renderRoom(options, ctx)
+}
+
+function renderRoomList (options, context) {
+  if (!context.roomEntry.entries) {
+    return ''
+  }
+  const roomEntries = context.roomEntry.entries.map((roomListEntry) => {
+    context.roomListEntry = roomListEntry
+    context.roomListContent = options.renderRoomListContent(options, context)
+    return options.renderRoomListEntry(options, context)
+  })
+  delete context.roomListContent
+  delete context.roomListEntry
+  return `${options.listHeader}${roomEntries.join(options.listSeperator)}${options.listFooter}`
+}
+
 function renderRoom (options, context) {
   if (!context.roomEntry) {
     return ''
@@ -45,7 +73,7 @@ function renderRoom (options, context) {
   if (context.roomEntry.summary === null) {
     return options.renderBreak(options, context)
   }
-  return `${options.quickEscape(context.roomEntry.summary)}${context.roomPerson}`
+  return `${options.quickEscape(context.roomEntry.summary)}${context.roomPerson}${context.roomList}`
 }
 
 function renderSingleRoom (options, context) {
@@ -61,6 +89,7 @@ function renderRooms (options, context) {
     context.room = slotEntry.room
     context.roomEntry = slotEntry.entry
     context.roomPerson = options.renderBy(options, context)
+    context.roomList = options.renderRoomList(options, context)
     let result
     if (context.data.rooms.length === 1) {
       result = options.renderRoom(options, context)
@@ -70,16 +99,21 @@ function renderRooms (options, context) {
     delete context.room
     delete context.roomEntry
     delete context.roomPerson
+    delete context.roomList
     return result
   }
   return context.data.rooms.map(room => {
     context.room = room
     context.roomEntry = slotEntry.entries[room]
-    context.roomPerson = options.renderBy(options, context)
+    if (context.roomEntry) {
+      context.roomPerson = options.renderBy(options, context)
+      context.roomList = options.renderRoomList(options, context)
+    }
     const result = options.renderRoom(options, context)
     delete context.room
     delete context.roomEntry
     delete context.roomPerson
+    delete context.roomList
     return result
   }).join(options.columnSeperator)
 }
@@ -141,6 +175,10 @@ const defaults = {
   columnSeperator: ' | ',
   rowSeperator: '\n',
   headerSeperator: '---',
+  listHeader: '<br/><ul>',
+  listSeperator: '</li>',
+  listBullet: '<li>',
+  listFooter: '</li></ul>',
   render,
   renderRow,
   renderHeader,
@@ -150,6 +188,9 @@ const defaults = {
   renderRooms,
   renderRoom,
   renderSingleRoom,
+  renderRoomList,
+  renderRoomListEntry,
+  renderRoomListContent,
   renderBreak,
   renderFullBreak,
   renderBy,
