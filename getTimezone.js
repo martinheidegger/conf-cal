@@ -47,36 +47,36 @@ function fromCache (googleObjectId) {
 
 module.exports = (apiKey, googleObjectId) =>
   fromCache(googleObjectId)
-  .then(cached => {
-    if (!cached) {
-      cached = fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${googleObjectId}&key=${apiKey}`)
-        .then(response => {
-          if (response.status >= 400) {
-            return Promise.reject(new Error(`[${response.status}] Error while loading url ${response.text()}`))
-          }
-          return response.json()
-        })
-        .then(json => {
-          if (json.status !== 'OK') {
-            return Promise.reject(new Error(`Google API didn't work out: [${json.status}] ${json.error_message}`))
-          }
-          return json.result
-        })
-        .then(obj => {
-          const loc = obj.geometry.location
-          obj.timeZone = geoTz.tz(loc.lat, loc.lng)
-          return obj
-        })
-        .then(obj => {
-          cachedLookup[googleObjectId] = obj
-          cachedData[googleObjectId] = obj
-          return writeCacheData()
-            .then(() => {
-              return obj
-            })
-        })
-      // For the next loading to use the same promise!
-      cachedLookup[googleObjectId] = cached
-    }
-    return cached
-  })
+    .then(cached => {
+      if (!cached) {
+        cached = fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${googleObjectId}&key=${apiKey}`)
+          .then(response => {
+            if (response.status >= 400) {
+              return Promise.reject(new Error(`[${response.status}] Error while loading url ${response.text()}`))
+            }
+            return response.json()
+          })
+          .then(json => {
+            if (json.status !== 'OK') {
+              return Promise.reject(new Error(`Google API didn't work out: [${json.status}] ${json.error_message}`))
+            }
+            return json.result
+          })
+          .then(obj => {
+            const loc = obj.geometry.location
+            obj.timeZone = geoTz.tz(loc.lat, loc.lng)
+            return obj
+          })
+          .then(obj => {
+            cachedLookup[googleObjectId] = obj
+            cachedData[googleObjectId] = obj
+            return writeCacheData()
+              .then(() => {
+                return obj
+              })
+          })
+        // For the next loading to use the same promise!
+        cachedLookup[googleObjectId] = cached
+      }
+      return cached
+    })

@@ -8,8 +8,8 @@ if (!apiKey) {
 
 test('get the timezone for a google object id', t =>
   getTimezone(apiKey, 'ChIJN1t_tDeuEmsRUsoyG83frY4')
-  .then(data => {
-    t.equals(data.name, 'Google')
-    t.equals(data.timeZone, 'Australia/Sydney')
-  })
+    .then(data => {
+      t.equals(data.name, 'Google')
+      t.equals(data.timeZone, 'Australia/Sydney')
+    })
 )

@@ -189,7 +189,7 @@ const confCal = (options, input) => {
     return Promise.reject(new CalError('missing-option', 'The "apiKey" options, containing a Google API key, is required to get the google object information for the location'))
   }
   return toPromise(input)
-   .then((stringOrBuffer) => processInput(options.apiKey, stringOrBuffer))
+    .then((stringOrBuffer) => processInput(options.apiKey, stringOrBuffer))
 }
 confCal.CalError = CalError
 module.exports = confCal

@@ -9,7 +9,7 @@ test('rendering of a single slot and a single room', (t) => {
       start: '2017-11-25T00:00:00.000Z',
       end: '2017-11-25T01:00:00.000Z',
       room: 'a',
-      entry: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1}
+      entry: { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1 }
     }]
   })
   t.equals(rendered, `
@@ -28,7 +28,7 @@ test('rendering of a single slot and a single multiline room', (t) => {
       start: '2017-11-25T00:00:00.000Z',
       end: '2017-11-25T01:00:00.000Z',
       room: 'a',
-      entry: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x\ny', person: null, rowSpan: 1}
+      entry: { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x\ny', person: null, rowSpan: 1 }
     }]
   })
   t.equals(rendered, `
@@ -53,8 +53,8 @@ test('rendering a multiline slot with a list', (t) => {
         summary: 'x',
         person: 'a',
         entries: [
-          {summary: 'y', person: 'b'},
-          {summary: 'z', person: 'c'}
+          { summary: 'y', person: 'b' },
+          { summary: 'z', person: 'c' }
         ],
         rowSpan: 1
       }
@@ -76,7 +76,7 @@ test('rendering with escape characters in the room, summary and person', (t) => 
       start: '2017-11-25T00:00:00.000Z',
       end: '2017-11-25T01:00:00.000Z',
       room: '|a|',
-      entry: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: '|x|', person: '|y|', rowSpan: 1}
+      entry: { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: '|x|', person: '|y|', rowSpan: 1 }
     }]
   })
   t.equals(rendered, `
@@ -95,15 +95,15 @@ test('rendering of two slots and two rooms', (t) => {
       start: '2017-11-25T00:00:00.000Z',
       end: '2017-11-25T01:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1},
-        b: {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: '1', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1 },
+        b: { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: '1', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T01:00:00.000Z',
       end: '2017-11-25T02:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: 'y', person: null, rowSpan: 1},
-        b: {start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: '2', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: 'y', person: null, rowSpan: 1 },
+        b: { start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: '2', person: null, rowSpan: 1 }
       }
     }]
   })
@@ -125,75 +125,75 @@ test('rendering of two slots with breaks and spaces', (t) => {
       end: '2017-11-25T01:00:00.000Z',
       room: 'a',
       entry:
-        {start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1}
+        { start: '2017-11-25T00:00:00.000Z', end: '2017-11-25T01:00:00.000Z', summary: 'x', person: null, rowSpan: 1 }
     }, {
       start: '2017-11-25T01:00:00.000Z',
       end: '2017-11-25T02:00:00.000Z',
       entry:
-        {start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: null, person: null, rowSpan: 1}
+        { start: '2017-11-25T01:00:00.000Z', end: '2017-11-25T02:00:00.000Z', summary: null, person: null, rowSpan: 1 }
     }, {
       start: '2017-11-25T02:00:00.000Z',
       end: '2017-11-25T03:00:00.000Z',
       room: 'a',
       entry:
-        {start: '2017-11-25T02:00:00.000Z', end: '2017-11-25T03:00:00.000Z', summary: 'y', person: null, rowSpan: 1}
+        { start: '2017-11-25T02:00:00.000Z', end: '2017-11-25T03:00:00.000Z', summary: 'y', person: null, rowSpan: 1 }
     }, {
       start: '2017-11-25T03:00:00.000Z',
       end: '2017-11-25T04:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T03:00:00.000Z', end: '2017-11-25T06:00:00.000Z', summary: 'y', person: null, rowSpan: 3},
-        b: {start: '2017-11-25T03:00:00.000Z', end: '2017-11-25T04:00:00.000Z', summary: '1', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T03:00:00.000Z', end: '2017-11-25T06:00:00.000Z', summary: 'y', person: null, rowSpan: 3 },
+        b: { start: '2017-11-25T03:00:00.000Z', end: '2017-11-25T04:00:00.000Z', summary: '1', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T04:00:00.000Z',
       end: '2017-11-25T05:00:00.000Z',
       entries: {
-        b: {start: '2017-11-25T04:00:00.000Z', end: '2017-11-25T05:00:00.000Z', summary: null, person: null, rowSpan: 1}
+        b: { start: '2017-11-25T04:00:00.000Z', end: '2017-11-25T05:00:00.000Z', summary: null, person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T05:00:00.000Z',
       end: '2017-11-25T06:00:00.000Z',
       entries: {
-        b: {start: '2017-11-25T05:00:00.000Z', end: '2017-11-25T06:00:00.000Z', summary: '2', person: null, rowSpan: 1}
+        b: { start: '2017-11-25T05:00:00.000Z', end: '2017-11-25T06:00:00.000Z', summary: '2', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T06:00:00.000Z',
       end: '2017-11-25T07:00:00.000Z',
       room: null,
       entry:
-        {start: '2017-11-25T06:00:00.000Z', end: '2017-11-25T07:00:00.000Z', summary: null, person: null, rowSpan: 1}
+        { start: '2017-11-25T06:00:00.000Z', end: '2017-11-25T07:00:00.000Z', summary: null, person: null, rowSpan: 1 }
     }, {
       start: '2017-11-25T07:00:00.000Z',
       end: '2017-11-25T08:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T07:00:00.000Z', end: '2017-11-25T08:00:00.000Z', summary: 'z', person: null, rowSpan: 1},
-        b: {start: '2017-11-25T07:00:00.000Z', end: '2017-11-25T08:00:00.000Z', summary: '3', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T07:00:00.000Z', end: '2017-11-25T08:00:00.000Z', summary: 'z', person: null, rowSpan: 1 },
+        b: { start: '2017-11-25T07:00:00.000Z', end: '2017-11-25T08:00:00.000Z', summary: '3', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T08:00:00.000Z',
       end: '2017-11-25T09:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T08:00:00.000Z', end: '2017-11-25T09:00:00.000Z', summary: null, person: null, rowSpan: 1},
-        b: {start: '2017-11-25T08:00:00.000Z', end: '2017-11-25T09:00:00.000Z', summary: '4', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T08:00:00.000Z', end: '2017-11-25T09:00:00.000Z', summary: null, person: null, rowSpan: 1 },
+        b: { start: '2017-11-25T08:00:00.000Z', end: '2017-11-25T09:00:00.000Z', summary: '4', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T09:00:00.000Z',
       end: '2017-11-25T10:00:00.000Z',
       entries: {
-        a: {start: '2017-11-25T09:00:00.000Z', end: '2017-11-25T10:00:00.000Z', summary: 'z\'', person: null, rowSpan: 1},
-        b: {start: '2017-11-25T09:00:00.000Z', end: '2017-11-25T10:00:00.000Z', summary: '5', person: null, rowSpan: 1}
+        a: { start: '2017-11-25T09:00:00.000Z', end: '2017-11-25T10:00:00.000Z', summary: 'z\'', person: null, rowSpan: 1 },
+        b: { start: '2017-11-25T09:00:00.000Z', end: '2017-11-25T10:00:00.000Z', summary: '5', person: null, rowSpan: 1 }
       }
     }, {
       start: '2017-11-25T10:00:00.000Z',
       end: '2017-11-25T11:00:00.000Z',
       entry:
-        {start: '2017-11-25T10:00:00.000Z', end: '2017-11-25T11:00:00.000Z', summary: '6', person: null, rowSpan: 1},
+        { start: '2017-11-25T10:00:00.000Z', end: '2017-11-25T11:00:00.000Z', summary: '6', person: null, rowSpan: 1 },
       room: 'b'
     }, {
       start: '2017-11-25T11:00:00.000Z',
       end: '2017-11-25T12:00:00.000Z',
       entry:
-        {start: '2017-11-25T11:00:00.000Z', end: '2017-11-25T12:00:00.000Z', summary: '7', person: null, rowSpan: 1},
+        { start: '2017-11-25T11:00:00.000Z', end: '2017-11-25T12:00:00.000Z', summary: '7', person: null, rowSpan: 1 },
       room: 'b'
     }]
   })
