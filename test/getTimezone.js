@@ -13,3 +13,11 @@ test('get the timezone for a google object id', t =>
       t.equals(data.timeZone, 'Australia/Sydney')
     })
 )
+
+test('get the timezone of mt everest', t =>
+  getTimezone(apiKey, 'ChIJvZ69FaJU6DkRsrqrBvjcdgU')
+    .then(data => {
+      t.equals(data.name, 'Mount Everest')
+      t.equals(data.timeZone, 'Asia/Shanghai')
+    })
+)

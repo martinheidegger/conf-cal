@@ -64,7 +64,7 @@ module.exports = (apiKey, googleObjectId) =>
           })
           .then(obj => {
             const loc = obj.geometry.location
-            obj.timeZone = geoTz.tz(loc.lat, loc.lng)
+            obj.timeZone = geoTz(loc.lat, loc.lng)
             return obj
           })
           .then(obj => {
