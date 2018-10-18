@@ -51,41 +51,53 @@ function processInput (apiKey, stringOrBuffer) {
     }
   }
   let room = null
+  let roomData = null
   let continueLine = true
   let indent = 0
+  let continueDescription = false
+  let wasEmpty = false
   lines.forEach((line, lineIndex) => {
     if (isEmptyLine(line)) {
+      wasEmpty = true
       return // empty lines
     }
+    processLine(line, lineIndex)
+    wasEmpty = false
+  })
+
+  function processRoom (line, lineIndex) {
     const r = /^\s*\[(.*)\]\s*$/ig.exec(line)
     if (r) {
       room = r[1]
+      roomData = []
+      rooms[room] = roomData
       checkMissing(lineIndex)
-      return
+      return true
     }
+  }
+
+  function processHeader (line, lineIndex) {
     if (!room) {
       const loc = /^\s*at ([^#]*)#(.*)\s*$/ig.exec(line)
       if (loc) {
         doc.location = loc[1]
         doc.googleObjectId = loc[2]
-        return
+        return true
       }
       const time = /^\s*on ([0-9]{4})\/([0-9]{2})\/([0-9]{2})\s*$/ig.exec(line)
       if (time) {
         doc.date = `${time[1]}${time[2]}${time[3]}`
-        return
+        return true
       }
       if (!doc.title) {
         doc.title = line.trim()
-        return
+        return true
       }
       throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex)
     }
-    let roomData = rooms[room]
-    if (!roomData) {
-      roomData = []
-      rooms[room] = roomData
-    }
+  }
+
+  function processDateLine (line, lineIndex) {
     const parts = /^(\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*(.*)\s*$/ig.exec(line)
     if (parts) {
       if (!continueLine) {
@@ -98,8 +110,21 @@ function processInput (apiKey, stringOrBuffer) {
         end: `${doc.date}T${parts[4]}${parts[5]}00`,
         summary
       }
+      continueDescription = false
       continueLine = processFirstLine(roomEntry)
       roomData.push(roomEntry)
+      return true
+    }
+  }
+
+  function processLine (line, lineIndex) {
+    if (processRoom(line, lineIndex)) {
+      return
+    }
+    if (processHeader(line, lineIndex)) {
+      return
+    }
+    if (processDateLine(line, lineIndex)) {
       return
     }
     const contParts = /^(\s+)(.*)$/ig.exec(line)
@@ -123,21 +148,32 @@ function processInput (apiKey, stringOrBuffer) {
           continueLine = processFirstLine(roomEntry)
           formerRoom.entries.push(roomEntry)
           return
-        } else {
-          roomEntry.summary += '\n'
         }
+        nextLine = '\n' + nextLine
       } else {
-        roomEntry.summary += ' '
+        nextLine = ' ' + nextLine
       }
       continueLine = !/\\$/ig.test(nextLine)
       if (!continueLine) {
         nextLine = nextLine.substr(0, nextLine.length - 1)
       }
+      if (continueDescription) {
+        if (wasEmpty) {
+          nextLine = '\n' + nextLine
+        }
+        roomEntry.description += nextLine
+        return
+      }
+      if (wasEmpty) {
+        continueDescription = true
+        roomEntry.description = nextLine.substr(1)
+        return
+      }
       roomEntry.summary += nextLine
       return
     }
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, contParts && contParts[1].length)
-  })
+  }
   checkMissing(lines.length - 1)
   return getTimezone(apiKey, doc.googleObjectId)
     .then(googleObject => {

@@ -14,6 +14,9 @@ module.exports = function slotsForRooms (timeZone, rooms) {
         person: entry.person,
         rowSpan: 1
       }
+      if (entry.description) {
+        newEntry.description = entry.description
+      }
       if (entry.entries) {
         newEntry.entries = entry.entries
       }

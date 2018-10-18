@@ -258,6 +258,69 @@ test('valid file with multiline entry with extension in next line from a multili
     })
 )
 
+test('description in entry', t => 
+  confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A by X
+
+        A simple description
+  `)
+    .then(doc => {
+      const slots = doc.toSlots()
+
+      t.deepEquals(slots, {
+        rooms: ['roomA'],
+        tz: 'America/Detroit',
+        slots: [{
+          start: '2017-11-11T15:20:00.000Z',
+          end: '2017-11-11T16:20:00.000Z',
+          room: 'roomA',
+          entry:
+          { start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X',  description: 'A simple description', rowSpan: 1 }
+        }]
+      })
+    })
+)
+
+test('description in entry with multiline and paragraphs', t => 
+  confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A by X
+
+        A simple description
+        can be fun
+        for many \\
+        people
+
+        But Life can be tricky,\\
+        take care!
+  `)
+    .then(doc => {
+      const slots = doc.toSlots()
+
+      t.deepEquals(slots, {
+        rooms: ['roomA'],
+        tz: 'America/Detroit',
+        slots: [{
+          start: '2017-11-11T15:20:00.000Z',
+          end: '2017-11-11T16:20:00.000Z',
+          room: 'roomA',
+          entry:
+          { start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X',
+            description: `A simple description\ncan be fun\nfor many  people\n\nBut Life can be tricky, take care!`, rowSpan: 1 }
+        }]
+      })
+    })
+)
+
 test('slots for doc', t =>
   confCal({ apiKey }, `
      Some Conference
