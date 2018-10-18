@@ -82,6 +82,12 @@ test('PROJECT USAGE', async t => {
     'The calendar has a set of rooms'
   )
 
+  t.deepEquals(
+    calendar.persons,
+    ['Super Man', 'Batman', 'Wonder Woman', 'Wolverine', 'The Hulk', 'The Flash'],
+    'There is also a handy list of all the persons that appear in this calendar.'
+  )
+
   t.equals(
     calendar.rooms['Main Room'].length,
     4,

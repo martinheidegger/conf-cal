@@ -36,6 +36,7 @@ function processInput (apiKey, stringOrBuffer) {
     throw new CalError('empty', 'Input is empty')
   }
   const rooms = {}
+  const persons = {}
   const doc = {
     rooms
   }
@@ -112,6 +113,9 @@ function processInput (apiKey, stringOrBuffer) {
       }
       continueDescription = false
       continueLine = processFirstLine(roomEntry)
+      if (roomEntry.person) {
+        persons[roomEntry.person] = true
+      }
       roomData.push(roomEntry)
       return true
     }
@@ -146,6 +150,9 @@ function processInput (apiKey, stringOrBuffer) {
             summary: listParts[1].trim()
           }
           continueLine = processFirstLine(roomEntry)
+          if (roomEntry.person) {
+            persons[roomEntry.person] = true
+          }
           formerRoom.entries.push(roomEntry)
           return
         }
@@ -179,6 +186,7 @@ function processInput (apiKey, stringOrBuffer) {
     .then(googleObject => {
       applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
+      doc.persons = Object.keys(persons)
       doc.toSlots = function () {
         return slotsForRooms(googleObject.timeZone, this.rooms)
       }
