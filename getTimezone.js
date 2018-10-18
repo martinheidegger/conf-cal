@@ -1,11 +1,40 @@
 const fetch = require('isomorphic-fetch')
 const geoTz = require('geo-tz')
-const fse = require('fs-extra')
+const fs = require('fs')
 const path = require('path')
 const CACHE_VERSION = 1
 const cacheFile = path.normalize(`${process.env.HOME}/.conf-cal_${CACHE_VERSION}.cache`)
 
-const cache = fse.readJSON(cacheFile)
+function readJSON (file) {
+  return new Promise((resolve, reject) =>
+    fs.access(file, err ? reject(err) :
+      fs.readFile(file, 'utf8', (err, raw) => err ? reject(err) : resolve(raw))
+    )
+  )
+    .then(raw => {
+      try {
+        return JSON.parse(raw)
+      } catch (err) {
+        throw new Error(`Error parsing JSON in ${file}: ${err.message}`)
+      }
+    })
+}
+
+function writeJSON (file, content) {
+  return new Promise((resolve, reject) => {
+    try {
+      fs.writeFile(
+        file,
+        JSON.stringify(content, null, 2),
+        err => err ? reject(err) : resolve()
+      )
+    } catch (err) {
+      reject(new Error(`Error writing JSON to ${file}: ${err.message}`))
+    }
+  })
+}
+
+const cache = readJSON(cacheFile)
   .catch(e => {
     if (e.code !== 'ENOENT') {
       console.warn(`Can't access cache file ${cacheFile}`)
@@ -17,7 +46,7 @@ let writingRequested
 let writing
 function writeCacheData (cachedData) {
   if (!writing) {
-    writing = fse.writeFile(cacheFile, JSON.stringify(cachedData, null, 2))
+    writing = writeJSON(cacheFile, cachedData)
       .catch(e => console.warn(`Can't write cache file to ${cacheFile}: ${e.stack || e}`))
       .then(() => {
         writing = null
