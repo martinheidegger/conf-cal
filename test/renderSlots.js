@@ -1,7 +1,7 @@
 const test = require('tap').test
 const renderSlots = require('../renderSlots')
 
-test('rendering of a single slot and a single room', (t) => {
+test('rendering of a single slot and a single room', async t => {
   const rendered = renderSlots({}, {
     rooms: ['a'],
     tz: 'Asia/Tokyo',
@@ -17,10 +17,9 @@ test('rendering of a single slot and a single room', (t) => {
 | --- | --- |
 | 9:00-10:00 | x |
 `)
-  t.end()
 })
 
-test('rendering of a single slot and a single multiline room', (t) => {
+test('rendering of a single slot and a single multiline room', async t => {
   const rendered = renderSlots({}, {
     rooms: ['a'],
     tz: 'Asia/Tokyo',
@@ -36,10 +35,9 @@ test('rendering of a single slot and a single multiline room', (t) => {
 | --- | --- |
 | 9:00-10:00 | x<br/>y |
 `)
-  t.end()
 })
 
-test('rendering a multiline slot with a list', (t) => {
+test('rendering a multiline slot with a list', async t => {
   const rendered = renderSlots({}, {
     rooms: ['a'],
     tz: 'Asia/Tokyo',
@@ -65,10 +63,9 @@ test('rendering a multiline slot with a list', (t) => {
 | --- | --- |
 | 9:00-10:00 | x by a<br/><ul><li>y by b</li><li>z by c</li></ul> |
 `)
-  t.end()
 })
 
-test('rendering with escape characters in the room, summary and person', (t) => {
+test('rendering with escape characters in the room, summary and person', async t => {
   const rendered = renderSlots({}, {
     rooms: ['|a|'],
     tz: 'Asia/Tokyo',
@@ -84,10 +81,9 @@ test('rendering with escape characters in the room, summary and person', (t) => 
 | --- | --- |
 | 9:00-10:00 | &#124;x&#124; by &#124;y&#124; |
 `)
-  t.end()
 })
 
-test('rendering of two slots and two rooms', (t) => {
+test('rendering of two slots and two rooms', async t => {
   const rendered = renderSlots({}, {
     rooms: ['a', 'b'],
     tz: 'Asia/Tokyo',
@@ -113,10 +109,9 @@ test('rendering of two slots and two rooms', (t) => {
 | 9:00-10:00 | x | 1 |
 | 10:00-11:00 | y | 2 |
 `)
-  t.end()
 })
 
-test('rendering of two slots with breaks and spaces', (t) => {
+test('rendering of two slots with breaks and spaces', async t => {
   const rendered = renderSlots({}, {
     rooms: ['a', 'b'],
     tz: 'Asia/Tokyo',
@@ -213,5 +208,4 @@ test('rendering of two slots with breaks and spaces', (t) => {
 | 19:00-20:00 | b: 6 |
 | 20:00-21:00 | b: 7 |
 `)
-  t.end()
 })
