@@ -1,4 +1,7 @@
-# conf-cal - a human-readable conference calender format and library
+# conf-cal
+_a human-readable conference calender format and library_
+
+[![Build Status](https://travis-ci.org/martinheidegger/conf-cal.svg?branch=master)](https://travis-ci.org/martinheidegger/conf-cal)
 
 When you have a conference, it can be a pain in the butt to keep
 the schedule and generate html out of it. This little library
