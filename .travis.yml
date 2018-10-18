@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- '8'
+sudo: false
+git:
+  depth: 1
+cache:
+  directories:
+  - "~/.npm"
+before_install:
+- rm -f ~/.conf-cal_1.cache
+env:
+  global:
+    secure: gVyzvOTdntwHcVMlJmcSNst3zRmamRhy5MgpCcs+Z0l0WV23FEKu09sNQtMYNDUrO0cy/Zq2W1+Iu671Fj5PkgtFtPfeJ1iSfqQJKSyCMhfoBO8CM7EAOgxGtPPGDMeCWN4yzod9VXcvsBAEtRCeikQeGDBHS27VtFN7JHRC66r9tkvuta14kj3DYIsROnfXEdE7Yt1MtBp09+ZmkaA8kxpGfHLp5h5PUTL9AmQR2kLCxkEORSf3WBHxcyyCHUkTKpdO/CPsPPuYvmv9Fpp8WxlPu9gTXLjXj/2Wq4ZfIFYYUYn6xZFjMyM/IU4S7Rv5MOUyAN0KNp/s3XjTCL8TNmXnVxrfyQS/FiyGQFZPsiPVyFRnpnKdaVzXmJp2cfFCge0dDVD2QQ+0QHnscBUr/ODjapX9FLhZbcYX2aVaIakC+0mP21loLIHexDASM+o1YzHA/4LMQ1APA0UgH49WTy6CGJM3CaxxnIC2h0TzCo1HlAakX+SIMJPrX6cvNCpCd1vh3EqXDuJxaufYsracphU/Fa4xvpOKbfn4HWL2PSYZrSwK3zsx326Bg46b4aHbQZxooWYnTur6dLUNSpkcvkvIeaU9du04nfOyQQy1GgDD7306sXaYtiwGU+AchLZXq/KWHlUeCUrxFrw49x4yBjkgkzMc1rxZs5fI8RNYvMg=
