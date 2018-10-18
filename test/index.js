@@ -70,12 +70,12 @@ test('valid file with rooms', t =>
     at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
 
     [roomA]
-    10:20-11:20 Event A by X
+    09:20-11:20 Event A by X
     11:20-13:00 Event B
     13:10-20:00 Event C
     
     [roomB]
-    10:20-13:00 Event D
+    09:20-13:00 Event D
     13:10-15:00 Event E by Y
   `)
     .then(data => {
@@ -87,7 +87,7 @@ test('valid file with rooms', t =>
       t.deepEquals(data.rooms, {
         roomA: [
           {
-            start: '2017-11-25T15:20:00.000Z',
+            start: '2017-11-25T14:20:00.000Z',
             end: '2017-11-25T16:20:00.000Z',
             summary: 'Event A',
             person: 'X'
@@ -105,7 +105,7 @@ test('valid file with rooms', t =>
         ],
         roomB: [
           {
-            start: '2017-11-25T15:20:00.000Z',
+            start: '2017-11-25T14:20:00.000Z',
             end: '2017-11-25T18:00:00.000Z',
             person: null,
             summary: 'Event D'
