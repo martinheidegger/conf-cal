@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.7.0"></a>
+# [2.7.0](https://github.com/martinheidegger/conf-cal/compare/v2.6.0...v2.7.0) (2018-10-18)
+
+
+### Features
+
+* **data:** Added a quickly accessible list of all persons. ([b19b8b1](https://github.com/martinheidegger/conf-cal/commit/b19b8b1))
+
+
+### Performance Improvements
+
+* Removed heavy fs-extra dependency. ([767122f](https://github.com/martinheidegger/conf-cal/commit/767122f))
+
+
+
 <a name="2.6.0"></a>
 # [2.6.0](https://github.com/martinheidegger/conf-cal/compare/v2.5.0...v2.6.0) (2018-10-18)
 
