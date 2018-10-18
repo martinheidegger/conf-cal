@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.8.0"></a>
+# [2.8.0](https://github.com/martinheidegger/conf-cal/compare/v2.7.1...v2.8.0) (2018-10-18)
+
+
+### Features
+
+* **custom-id:** Added support for custom id's set by the user. ([eb54006](https://github.com/martinheidegger/conf-cal/commit/eb54006))
+* **data:** Added support for automatic ids. ([230cbcd](https://github.com/martinheidegger/conf-cal/commit/230cbcd))
+
+
+
 <a name="2.7.1"></a>
 ## [2.7.1](https://github.com/martinheidegger/conf-cal/compare/v2.7.0...v2.7.1) (2018-10-18)
 
