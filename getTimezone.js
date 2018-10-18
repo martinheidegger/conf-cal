@@ -1,5 +1,5 @@
 const fetch = require('isomorphic-fetch')
-const geoTz = require('geo-tz')
+let geoTz
 const fs = require('fs')
 const path = require('path')
 const CACHE_VERSION = 1
@@ -88,6 +88,10 @@ module.exports = (apiKey, googleObjectId) => {
         })
         .then(obj => {
           const loc = obj.geometry.location
+          if (!geoTz) {
+            // Lazy require: geo-tz is a monster!
+            geoTz = require('geo-tz')
+          }
           obj.timeZone = geoTz(loc.lat, loc.lng)
           return obj
         })

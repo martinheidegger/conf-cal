@@ -90,16 +90,19 @@ test('valid file with rooms', async t => {
       {
         start: '2017-11-25T14:20:00.000Z',
         end: '2017-11-25T16:20:00.000Z',
+        id: '1-1',
         summary: 'Event A',
         person: 'X'
       }, {
         start: '2017-11-25T16:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
+        id: '1-2',
         summary: 'Event B',
         person: null
       }, {
         start: '2017-11-25T18:10:00.000Z',
         end: '2017-11-26T01:00:00.000Z',
+        id: '1-3',
         person: null,
         summary: 'Event C'
       }
@@ -108,11 +111,13 @@ test('valid file with rooms', async t => {
       {
         start: '2017-11-25T14:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
+        id: '2-1',
         person: null,
         summary: 'Event D'
       }, {
         start: '2017-11-25T18:10:00.000Z',
         end: '2017-11-25T20:00:00.000Z',
+        id: '2-2',
         person: 'Y',
         summary: 'Event E'
       }
@@ -144,12 +149,14 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
       {
         start: '2017-11-25T15:20:00.000Z',
         end: '2017-11-25T16:20:00.000Z',
+        id: '1-1',
         summary: 'Event A Fancy test\nEven line endings are funny',
         person: 'X'
       },
       {
         start: '2017-11-25T16:30:00.000Z',
         end: '2017-11-25T17:30:00.000Z',
+        id: '1-2',
         summary: 'Event B\nand more text it is',
         person: null
       }
@@ -181,12 +188,13 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
       {
         start: '2017-11-25T15:20:00.000Z',
         end: '2017-11-25T16:20:00.000Z',
+        id: '1-1',
         summary: 'Event A',
         entries: [
-          { summary: 'Event A1', person: 'X' },
-          { summary: 'Event A2', person: 'Y' },
-          { summary: 'Event A3 has more text', person: 'Z' },
-          { summary: 'Event A4', person: 'Z\'' }
+          { id: '1-1-1', parentId: '1-1', summary: 'Event A1', person: 'X' },
+          { id: '1-1-2', parentId: '1-1', summary: 'Event A2', person: 'Y' },
+          { id: '1-1-3', parentId: '1-1', summary: 'Event A3 has more text', person: 'Z' },
+          { id: '1-1-4', parentId: '1-1', summary: 'Event A4', person: 'Z\'' }
         ],
         person: null
       }
@@ -279,7 +287,7 @@ test('description in entry', async t => {
       end: '2017-11-11T16:20:00.000Z',
       room: 'roomA',
       entry:
-      { start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X', description: 'A simple description', rowSpan: 1 }
+      { id: '1-1', start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X', description: 'A simple description', rowSpan: 1 }
     }]
   })
 })
@@ -314,6 +322,7 @@ test('description in entry with multiline and paragraphs', async t => {
       { start: '2017-11-11T15:20:00.000Z',
         end: '2017-11-11T16:20:00.000Z',
         summary: 'Event A',
+        id: '1-1',
         person: 'X',
         description: `A simple description\ncan be fun\nfor many  people\n\nBut Life can be tricky, take care!`,
         rowSpan: 1 }
@@ -345,14 +354,14 @@ test('slots for doc', async t => {
         end: '2017-11-11T17:00:00.000Z',
         room: 'roomA',
         entry:
-        { start: '2017-11-11T15:00:00.000Z', end: '2017-11-11T17:00:00.000Z', summary: 'eventA', person: 'X', rowSpan: 1 }
+        { id: '1-1', start: '2017-11-11T15:00:00.000Z', end: '2017-11-11T17:00:00.000Z', summary: 'eventA', person: 'X', rowSpan: 1 }
       },
       {
         start: '2017-11-11T17:00:00.000Z',
         end: '2017-11-11T18:00:00.000Z',
         entries: {
-          roomA: { start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventB', person: null, rowSpan: 1 },
-          roomB: { start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventC', person: 'Y', rowSpan: 1 }
+          roomA: { id: '1-2', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventB', person: null, rowSpan: 1 },
+          roomB: { id: '2-1', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventC', person: 'Y', rowSpan: 1 }
         }
       }
     ] })

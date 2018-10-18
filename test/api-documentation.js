@@ -149,6 +149,12 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
   )
 
   t.equals(
+    slotData.slots[0].entry.id,
+    '1-1',
+    'Every valid entry in the document gets an unique id.'
+  )
+
+  t.equals(
     slotData.slots[0].entry.start,
     '2019-01-01T02:00:00.000Z',
     'Every slot-entry also has a start ...'
@@ -170,6 +176,12 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
     slotData.slots[2].entry.summary,
     null,
     'A null-summary indicates a break!'
+  )
+
+  t.equals(
+    slotData.slots[2].entry.id,
+    undefined,
+    'Breaks do not receive an id!'
   )
 
   const theFlashTalk = slotData.slots[3].entries['Track A']
@@ -220,5 +232,23 @@ the funniest bumps of the last year.`,
   t.ok(
     Array.isArray(slotData.slots[5].entries['Main Room'].entries),
     'Adding a list at of entries instead of a description will add the whole list of subentries'
+  )
+
+  t.equals(
+    calendar.entries[theFlashTalk.id],
+    calendar.rooms['Track A'][0],
+    'The entries array contains a nice list of all entries in "rooms" ...'
+  )
+
+  t.equals(
+    calendar.entries[theFlashTalk.id].id,
+    theFlashTalk.id,
+    '... and even though they look similar to the entries that you receive from toSlots'
+  )
+
+  t.notEquals(
+    calendar.entries[theFlashTalk.id],
+    theFlashTalk,
+    '... they are not exacty the same!'
   )
 })

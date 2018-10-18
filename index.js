@@ -37,6 +37,7 @@ function processInput (apiKey, stringOrBuffer) {
   }
   const rooms = {}
   const persons = {}
+  const entries = {}
   const doc = {
     rooms
   }
@@ -52,6 +53,7 @@ function processInput (apiKey, stringOrBuffer) {
     }
   }
   let room = null
+  let roomIndex = 0
   let roomData = null
   let continueLine = true
   let indent = 0
@@ -72,6 +74,7 @@ function processInput (apiKey, stringOrBuffer) {
       room = r[1]
       roomData = []
       rooms[room] = roomData
+      roomIndex += 1
       checkMissing(lineIndex)
       return true
     }
@@ -107,6 +110,7 @@ function processInput (apiKey, stringOrBuffer) {
       indent = parts[1].length
       let summary = parts[6].trim()
       const roomEntry = {
+        id: `${roomIndex}-${roomData.length + 1}`,
         start: `${doc.date}T${parts[2]}${parts[3]}00`,
         end: `${doc.date}T${parts[4]}${parts[5]}00`,
         summary
@@ -116,6 +120,7 @@ function processInput (apiKey, stringOrBuffer) {
       if (roomEntry.person) {
         persons[roomEntry.person] = true
       }
+      entries[roomEntry.id] = roomEntry
       roomData.push(roomEntry)
       return true
     }
@@ -147,12 +152,15 @@ function processInput (apiKey, stringOrBuffer) {
             formerRoom.entries = []
           }
           roomEntry = {
+            id: `${formerRoom.id}-${formerRoom.entries.length + 1}`,
             summary: listParts[1].trim()
           }
-          continueLine = processFirstLine(roomEntry)
+          entries[roomEntry.id] = roomEntry
+          continueLine = processFirstLine(roomEntry, formerRoom)
           if (roomEntry.person) {
             persons[roomEntry.person] = true
           }
+          roomEntry.parentId = formerRoom.id
           formerRoom.entries.push(roomEntry)
           return
         }
@@ -187,6 +195,7 @@ function processInput (apiKey, stringOrBuffer) {
       applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
       doc.persons = Object.keys(persons)
+      doc.entries = entries
       doc.toSlots = function () {
         return slotsForRooms(googleObject.timeZone, this.rooms)
       }
