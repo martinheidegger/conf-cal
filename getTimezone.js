@@ -7,8 +7,9 @@ const cacheFile = path.normalize(`${process.env.HOME}/.conf-cal_${CACHE_VERSION}
 
 function readJSON (file) {
   return new Promise((resolve, reject) =>
-    fs.access(file, err ? reject(err) :
-      fs.readFile(file, 'utf8', (err, raw) => err ? reject(err) : resolve(raw))
+    fs.access(file, err => err
+      ? reject(err)
+      : fs.readFile(file, 'utf8', (err, raw) => err ? reject(err) : resolve(raw))
     )
   )
     .then(raw => {
