@@ -5,6 +5,27 @@ const renderSlots = require('./renderSlots')
 const moment = require('moment')
 const MD_INDENT = 4
 
+function applyAutoIds (entries, entriesList) {
+  for (const entry of entriesList) {
+    if (!entry.id) {
+      let id = entry.auto_id
+      // This works because the parent
+      // is always before the child in the list
+      if (entry.parent) {
+        id = `${entry.parent.id}${entry.auto_id}`
+        entry.parentId = entry.parent.id
+        delete entry.parent
+      }
+      while (entries[id]) {
+        id = `$${id}`
+      }
+      entry.id = id
+      entries[id] = entry
+    }
+    delete entry.auto_id
+  }
+}
+
 function extractPerson (roomEntry) {
   let personParts = /\s+by\s+(.*)$/ig.exec(roomEntry.summary)
   if (personParts) {
@@ -13,16 +34,6 @@ function extractPerson (roomEntry) {
   } else {
     roomEntry.person = null
   }
-  return roomEntry
-}
-
-function processFirstLine (roomEntry) {
-  extractPerson(roomEntry)
-  const continueLine = !/\\$/ig.test(roomEntry.summary)
-  if (!continueLine) {
-    roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
-  }
-  return continueLine
 }
 
 function processInput (apiKey, stringOrBuffer) {
@@ -38,6 +49,7 @@ function processInput (apiKey, stringOrBuffer) {
   const rooms = {}
   const persons = {}
   const entries = {}
+  const entriesList = []
   const doc = {
     rooms
   }
@@ -67,6 +79,32 @@ function processInput (apiKey, stringOrBuffer) {
     processLine(line, lineIndex)
     wasEmpty = false
   })
+
+  function extractId (roomEntry, lineIndex, columOffset) {
+    let idParts = /\s+#([a-zA-Z0-9-._~:@/?!$&'()*+,;=]*)/ig.exec(roomEntry.summary)
+    if (idParts) {
+      roomEntry.summary = roomEntry.summary.substr(0, idParts.index)
+      const id = idParts[1]
+      if (entries[id]) {
+        throw new CalError('duplicate-id', `There are two or more entries with the id: ${id}`, lineIndex, columOffset + idParts.index)
+      }
+      roomEntry.id = id
+    }
+  }
+
+  function extractRoomInfo (roomEntry, lineIndex, columOffset) {
+    extractId(roomEntry, lineIndex, columOffset)
+    extractPerson(roomEntry)
+  }
+
+  function processFirstLine (roomEntry, lineIndex, columOffset) {
+    extractRoomInfo(roomEntry, lineIndex, columOffset)
+    const continueLine = !/\\$/ig.test(roomEntry.summary)
+    if (!continueLine) {
+      roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
+    }
+    return continueLine
+  }
 
   function processRoom (line, lineIndex) {
     const r = /^\s*\[(.*)\]\s*$/ig.exec(line)
@@ -102,25 +140,28 @@ function processInput (apiKey, stringOrBuffer) {
   }
 
   function processDateLine (line, lineIndex) {
-    const parts = /^(\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*(.*)\s*$/ig.exec(line)
+    const parts = /^((\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*)(.*)\s*$/ig.exec(line)
     if (parts) {
       if (!continueLine) {
-        throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[1].length)
+        throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[2].length)
       }
-      indent = parts[1].length
-      let summary = parts[6].trim()
+      indent = parts[2].length
       const roomEntry = {
-        id: `${roomIndex}-${roomData.length + 1}`,
-        start: `${doc.date}T${parts[2]}${parts[3]}00`,
-        end: `${doc.date}T${parts[4]}${parts[5]}00`,
-        summary
+        auto_id: `${roomIndex}-${roomData.length + 1}`,
+        start: `${doc.date}T${parts[3]}${parts[4]}00`,
+        end: `${doc.date}T${parts[5]}${parts[6]}00`,
+        summary: parts[7]
       }
       continueDescription = false
-      continueLine = processFirstLine(roomEntry)
+      continueLine = processFirstLine(roomEntry, lineIndex, parts[1].length)
+      roomEntry.summary = roomEntry.summary.trim()
       if (roomEntry.person) {
         persons[roomEntry.person] = true
       }
-      entries[roomEntry.id] = roomEntry
+      if (roomEntry.id) {
+        entries[roomEntry.id] = roomEntry
+      }
+      entriesList.push(roomEntry)
       roomData.push(roomEntry)
       return true
     }
@@ -146,21 +187,25 @@ function processInput (apiKey, stringOrBuffer) {
       }
       let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
       if (continueLine) {
-        const listParts = /^-\s+(.*)$/g.exec(nextLine)
+        const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
         if (listParts) {
           if (!formerRoom.entries) {
             formerRoom.entries = []
           }
           roomEntry = {
-            id: `${formerRoom.id}-${formerRoom.entries.length + 1}`,
-            summary: listParts[1].trim()
+            auto_id: `-${formerRoom.entries.length + 1}`,
+            summary: listParts[2]
           }
-          entries[roomEntry.id] = roomEntry
-          continueLine = processFirstLine(roomEntry, formerRoom)
+          if (roomEntry.id) {
+            entries[roomEntry.id] = roomEntry
+          }
+          entriesList.push(roomEntry)
+          continueLine = processFirstLine(roomEntry, lineIndex, listParts[1].length + contParts[1].length)
+          roomEntry.summary = roomEntry.summary.trim()
           if (roomEntry.person) {
             persons[roomEntry.person] = true
           }
-          roomEntry.parentId = formerRoom.id
+          roomEntry.parent = formerRoom
           formerRoom.entries.push(roomEntry)
           return
         }
@@ -195,6 +240,7 @@ function processInput (apiKey, stringOrBuffer) {
       applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
       doc.persons = Object.keys(persons)
+      applyAutoIds(entries, entriesList)
       doc.entries = entries
       doc.toSlots = function () {
         return slotsForRooms(googleObject.timeZone, this.rooms)

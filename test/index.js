@@ -73,11 +73,11 @@ test('valid file with rooms', async t => {
 
     [roomA]
     09:20-11:20 Event A by X
-    11:20-13:00 Event B
+    11:20-13:00 Event B #b
     13:10-20:00 Event C
     
     [roomB]
-    09:20-13:00 Event D
+    09:20-13:00 Event D #d
     13:10-15:00 Event E by Y
   `)
   t.equals(data.location, 'Fiery Hell')
@@ -96,7 +96,7 @@ test('valid file with rooms', async t => {
       }, {
         start: '2017-11-25T16:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
-        id: '1-2',
+        id: 'b',
         summary: 'Event B',
         person: null
       }, {
@@ -111,7 +111,7 @@ test('valid file with rooms', async t => {
       {
         start: '2017-11-25T14:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
-        id: '2-1',
+        id: 'd',
         person: null,
         summary: 'Event D'
       }, {
@@ -393,4 +393,73 @@ at [Abbots place](https://maps.google.com/?q=Hell,+MI+48169,+USA&ftid=0x88233457
 | 12:00-12:10 | eventB | [Break] |
 | 12:10-13:00 |  | eventC by Y<br/><ul><li>eventD by Z</li><li>eventE</li><li>eventF</li></ul> |
 `)
+})
+
+test('duplicate ids result in a conflict', async t => {
+  try {
+    await confCal({ apiKey }, `
+      Some Conference
+      on 2017/11/11
+      at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+      [roomA]
+      10:00-12:00 eventA #x
+      12:00-13:00 eventB #x
+    `)
+  } catch (e) {
+    if (!(e instanceof confCal.CalError) || e.code !== 'duplicate-id') {
+      throw e
+    }
+    t.equals(e.line, 8)
+    t.equals(e.column, 25)
+  }
+})
+
+test('duplicate ids result in a conflict, even with subentries', async t => {
+  try {
+    await confCal({ apiKey }, `
+      Some Conference
+      on 2017/11/11
+      at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+      [roomA]
+      10:00-12:00 eventA #x
+      12:00-13:00 eventB
+          - talk a #x
+    `)
+  } catch (e) {
+    if (!(e instanceof confCal.CalError) || e.code !== 'duplicate-id') {
+      throw e
+    }
+    t.equals(e.line, 9)
+    t.equals(e.column, 19)
+  }
+})
+
+test('auto-ids expand if the ids are pre-occupied', async t => {
+  const doc = await confCal({ apiKey }, `
+    Some Conference
+    on 2017/11/11
+    at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:00-12:00 eventA #1-2
+    12:00-13:00 eventB
+  `)
+  t.deepEquals(doc.entries['1-2'].summary, 'eventA')
+  t.deepEquals(doc.entries['$1-2'].summary, 'eventB')
+})
+
+test('specified ids are of higher importance than auto-ids', async t => {
+  const doc = await confCal({ apiKey }, `
+    Some Conference
+    on 2017/11/11
+    at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:00-12:00 eventA
+    12:00-13:00 eventB #1-1
+  `)
+  t.deepEquals(doc.entries['$1-1'].summary, 'eventA')
+  t.deepEquals(doc.entries['1-1'].summary, 'eventB')
 })

@@ -12,7 +12,7 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
 
 [Main Room]
 10:00-10:20 Opening
-10:20-11:00 Doing the right thing by Super Man
+10:20-11:00 Doing the right thing by Super Man #keynote
   
     Super Man will talk about the challenges he faced
     trying to do the right thing when you are
@@ -152,6 +152,12 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
     slotData.slots[0].entry.id,
     '1-1',
     'Every valid entry in the document gets an unique id.'
+  )
+
+  t.equals(
+    slotData.slots[1].entry.id,
+    'keynote',
+    'Which can be overwritten.'
   )
 
   t.equals(

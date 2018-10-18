@@ -19,6 +19,8 @@ It makes sure that all the important data is there:
 - Event Title/Description/Presenter
 - Automatic Breaks Calculation _(times between the slots are automatically breaks)_
 - Automatic Slot Calculation _(just enter the times and it can figure out the slots)_
+- Automatically generates IDs for each entry that can be overridden
+    _(to preserve deep links even when data changes)_
 
 You can process this format with a **very lightweight** Node JS library.
 
@@ -31,8 +33,8 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
 
 [Main Room]
 10:00-10:20 Opening
-10:20-11:00 Doing the right thing by Super Man
-  
+10:20-11:00 Doing the right thing by Super Man #keynote
+
     Super Man will talk about the challenges he faced
     trying to do the right thing when you are
     basically a god
@@ -66,7 +68,7 @@ on <year>/<month>/<date>
 at <name-of-location>#<google-place-id>
 
 [<room-name>]
-<start>-<end> <summary> (by <person>
+<start>-<end> <summary>( by <person>)( #<custom-id>)
 <four-space-indent><<line-break><description>> or list of subentries>
 
 [<other-room-name>]
