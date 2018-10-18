@@ -21,12 +21,12 @@
     "fs-extra": "^7.0.0",
     "geo-tz": "^4.0.2",
     "isomorphic-fetch": "^2.2.1",
-    "moment": "^2.19.1",
+    "moment": "^2.22.2",
     "moment-timezone": "^0.5.21"
   },
   "devDependencies": {
     "standard": "^12.0.1",
-    "standard-version": "^4.2.0",
+    "standard-version": "^4.4.0",
     "tap": "^12.0.1"
   },
   "directories": {
