@@ -36,11 +36,7 @@ function extractPerson (roomEntry) {
   }
 }
 
-function processInput (apiKey, stringOrBuffer) {
-  if (!stringOrBuffer) {
-    throw new CalError('empty', 'Input not given')
-  }
-  const string = stringOrBuffer.toString()
+function processInput (options, string) {
   const lines = string.split('\n')
   const isEmptyLine = (line) => /^\s*$/.test(line)
   if (lines.filter(isEmptyLine).length === lines.length) {
@@ -235,28 +231,13 @@ function processInput (apiKey, stringOrBuffer) {
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, contParts && contParts[1].length)
   }
   checkMissing(lines.length - 1)
-  return getTimezone(apiKey, doc.googleObjectId)
+  return getTimezone(options, doc.googleObjectId)
     .then(googleObject => {
       applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
       doc.persons = Object.keys(persons)
       applyAutoIds(entries, entriesList)
       doc.entries = entries
-      doc.toSlots = function () {
-        return slotsForRooms(googleObject.timeZone, this.rooms)
-      }
-      doc.render = function (options) {
-        const slots = this.toSlots()
-        options = Object.assign({
-          header: `## ${this.title}
-at [${this.location}](${googleObject.url})
-`
-        }, options)
-        return renderSlots(options, slots)
-      }
-      doc.toMarkdown = function () {
-        return this.render({})
-      }
       return doc
     })
 }
@@ -284,11 +265,34 @@ const confCal = (options, input) => {
   if (!options || typeof options !== 'object') {
     return Promise.reject(new CalError('missing-option', 'options are missing'))
   }
-  if (!options.apiKey) {
-    return Promise.reject(new CalError('missing-option', 'The "apiKey" options, containing a Google API key, is required to get the google object information for the location'))
-  }
   return toPromise(input)
-    .then((stringOrBuffer) => processInput(options.apiKey, stringOrBuffer))
+    .then(stringOrBuffer => {
+      if (!stringOrBuffer) {
+        throw new CalError('empty', 'Input not given')
+      }
+      return String(stringOrBuffer)
+    })
+    .then(string => processInput(options, string))
+    .then(rawData => {
+      return Object.assign(
+        rawData,
+        {
+          toSlots: function () {
+            return slotsForRooms(this.googleObject.timeZone, this.rooms)
+          },
+          render: function (options) {
+            const slots = this.toSlots()
+            options = Object.assign({
+              header: `## ${this.title}\nat [${this.location}](${this.googleObject.url})\n`
+            }, options)
+            return renderSlots(options, slots)
+          },
+          toMarkdown: function () {
+            return this.render({})
+          }
+        }
+      )
+    })
 }
 confCal.CalError = CalError
 module.exports = confCal

@@ -39,7 +39,10 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     the funniest bumps of the last year.`
 
 test('PROJECT USAGE', async t => {
-  const calendar = await confCal({ apiKey }, DOC_SAMPLE)
+  const calendar = await confCal({
+    apiKey, // The Google API key to call "places"
+    cache: `${__dirname}/api-documentation.objects` // Store
+  }, DOC_SAMPLE)
   t.deepEquals(
     {
       title: calendar.title,
