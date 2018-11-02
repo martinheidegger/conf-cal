@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const CalError = require('./CalError')
 const CACHE_VERSION = 1
-const DEFAULT_CACHE = path.normalize(`${process.env.HOME}/.conf-cal_${CACHE_VERSION}.cache`)
+const DEFAULT_CACHE = path.normalize(`${require('os').homedir()}/.conf-cal_${CACHE_VERSION}.cache`)
 
 function readJSON (file) {
   return new Promise((resolve, reject) =>
