@@ -6,6 +6,54 @@ if (!apiKey) {
   throw new Error('To run the unit test you need to set the GOOGLE_API_KEY environment variable')
 }
 
+
+test('with', async t => {
+  const calendar = await confCal({ apiKey }, `
+  Fancy Conf
+  on 2019/01/01
+  at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
+  
+  [roomX]
+  10:00-11:00 summary by PersonA with personB, personC, personD, personE, personF
+  `)
+
+  t.equals(calendar.rooms.roomX[0].persons, 'PersonA')
+  t.deepEquals(calendar.rooms.roomX[0].persons, 'personB')
+})
+
+const string = "10:00-11:00 Summary by personA with personeB, per-sonC, per sonD, かつややまもとさん,";
+let personsArr = string.match(/[^, ]+(?=,)/gi);
+console.log(personsArr);
+
+// let str = `Fancy Conf
+// on 2019/01/01
+// at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
+
+// [roomX]
+// 10:00-11:00 summary by personA; personB; per-sonC; per-sonD; かつややまもとさん;`;
+
+// let res = str.split(" ");
+// //console.log(res)
+
+// let array =[];
+
+
+// res.forEach(function (item){
+//   let index = item.indexOf(";")
+//   if(index > -1){
+//     array.push(item.slice(0,item.length - 1))
+//   }
+// })
+
+// let objectX = {
+//   persons: array
+// }
+
+// console.log(objectX)
+
+
+/*
+
 async function emptyTest (input) {
   try {
     await confCal({ apiKey }, input)
@@ -463,3 +511,4 @@ test('specified ids are of higher importance than auto-ids', async t => {
   t.deepEquals(doc.entries['$1-1'].summary, 'eventA')
   t.deepEquals(doc.entries['1-1'].summary, 'eventB')
 })
+*/
