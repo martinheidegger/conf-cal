@@ -18,11 +18,11 @@ test('with', async t => {
   `)
 
   let testEntry = calendar.rooms.roomX[0]
-  t.equals(testEntry.person, 'PersonA')
-  t.deepEquals(testEntry.persons, ['personB', 'personC', 'personD'])
+  t.equals(testEntry.presenter, 'PersonA')
+  t.deepEquals(testEntry.otherPresenters, ['personB', 'personC', 'personD'])
   return(
-    console.log('person: ',testEntry.person),
-    console.log('persons: ', testEntry.persons)   
+    console.log('person: ',testEntry.presenter),
+    console.log('persons: ', testEntry.otherPresenters)   
   )
 })
 
