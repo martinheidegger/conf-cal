@@ -37,9 +37,9 @@ function extractPerson (roomEntry) {
     roomEntry.summary = roomEntry.summary.substr(0, personParts.index)
     let parts = presentedBy[0]
     // console.log('parts: ', typeof parts)
-    roomEntry.person = parts
+    roomEntry.presenter = parts
   } else {
-    roomEntry.person = null
+    roomEntry.presenter = null
   }
 
   presentedBy.splice(0,2)
@@ -55,9 +55,9 @@ function extractPerson (roomEntry) {
         theOthersPersonsArrayCleaned.push(item)
       }
     })
-    roomEntry.persons = theOthersPersonsArrayCleaned
+    roomEntry.otherPresenters = theOthersPersonsArrayCleaned
   } else {
-    roomEntry.persons = null
+    roomEntry.otherPresenters = null
   }
   // console.log('others: ', theOthersPersonsArrayCleaned)
   
