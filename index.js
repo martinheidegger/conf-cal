@@ -26,40 +26,34 @@ function applyAutoIds (entries, entriesList) {
   }
 }
 
-function scrapingPersons(data){
-  console("data: ", data)
-  let res = data.split(" ");
-  let array = [];
-  
-  res.forEach((item)=>{
-    let index = item.indexOf(",")
-    if(index>-1){
-      // console.log(item)
-      array.push(item.slice(0, item.length -1))
-    }
-  })
-
-  return array
-}
-
 function extractPerson (roomEntry) {
-  // let personParts = scrapingPersons(roomEntry.summary)
-
   let personParts = /\s+by\s+(.*)$/ig.exec(roomEntry.summary)
-
-  console.log("personParts: ", personParts)
-
+  let presentedBy = personParts[1].split(" ")
+  
   if (personParts) {
     roomEntry.summary = roomEntry.summary.substr(0, personParts.index)
-    console.log("room entry summary: ", roomEntry.summary)
-
-    let parts = personParts[1]
-    roomEntry.person = parts
-    // roomEntry.person = scrapingPersons(parts)
-    console.log("rooom entry person: ", roomEntry.person)
+    let parts = presentedBy[0]
+    roomEntry.presenter = parts
   } else {
-    roomEntry.person = null
+    roomEntry.presenter = null
   }
+
+  presentedBy.splice(0,2)
+  let othersPersons = presentedBy
+  if(othersPersons){
+    let theOthersPersonsArrayCleaned = []
+    othersPersons.forEach((item)=>{
+      let index = item.indexOf(",")
+      if(index > -1){
+        theOthersPersonsArrayCleaned.push(item.slice(0,item.length - 1))
+      } else {
+        theOthersPersonsArrayCleaned.push(item)
+      }
+    })
+    roomEntry.otherPresenters = theOthersPersonsArrayCleaned
+  } else {
+    roomEntry.otherPresenters = null
+  }  
 }
 
 function processInput (options, string) {

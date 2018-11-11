@@ -14,45 +14,13 @@ test('with', async t => {
   at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
   
   [roomX]
-  10:00-11:00 summary by PersonA with personB, personC, personD, personE, personF
+  10:00-11:00 summary by PersonA with personB, personC, personD
   `)
 
-  t.equals(calendar.rooms.roomX[0].persons, 'PersonA')
-  t.deepEquals(calendar.rooms.roomX[0].persons, 'personB')
+  let testEntry = calendar.rooms.roomX[0]
+  t.equals(testEntry.presenter, 'PersonA')
+  t.deepEquals(testEntry.otherPresenters, ['personB', 'personC', 'personD'])
 })
-
-const string = "10:00-11:00 Summary by personA with personeB, per-sonC, per sonD, かつややまもとさん,";
-let personsArr = string.match(/[^, ]+(?=,)/gi);
-console.log(personsArr);
-
-// let str = `Fancy Conf
-// on 2019/01/01
-// at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
-
-// [roomX]
-// 10:00-11:00 summary by personA; personB; per-sonC; per-sonD; かつややまもとさん;`;
-
-// let res = str.split(" ");
-// //console.log(res)
-
-// let array =[];
-
-
-// res.forEach(function (item){
-//   let index = item.indexOf(";")
-//   if(index > -1){
-//     array.push(item.slice(0,item.length - 1))
-//   }
-// })
-
-// let objectX = {
-//   persons: array
-// }
-
-// console.log(objectX)
-
-
-/*
 
 async function emptyTest (input) {
   try {
@@ -511,4 +479,4 @@ test('specified ids are of higher importance than auto-ids', async t => {
   t.deepEquals(doc.entries['$1-1'].summary, 'eventA')
   t.deepEquals(doc.entries['1-1'].summary, 'eventB')
 })
-*/
+
