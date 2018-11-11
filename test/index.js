@@ -14,23 +14,28 @@ test('with', async t => {
   at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
   
   [roomX]
-  10:00-11:00 summary by PersonA with personB, personC, personD, personE, personF
+  10:00-11:00 summary by PersonA with personB, personC, personD
   `)
 
-  t.equals(calendar.rooms.roomX[0].persons, 'PersonA')
-  t.deepEquals(calendar.rooms.roomX[0].persons, 'personB')
+  let testEntry = calendar.rooms.roomX[0]
+  t.equals(testEntry.person, 'PersonA')
+  t.deepEquals(testEntry.persons, ['personB', 'personC', 'personD'])
+  return(
+    console.log('person: ',testEntry.person),
+    console.log('persons: ', testEntry.persons)   
+  )
 })
 
-const string = "10:00-11:00 Summary by personA with personeB, per-sonC, per sonD, かつややまもとさん,";
-let personsArr = string.match(/[^, ]+(?=,)/gi);
-console.log(personsArr);
+// const string = "10:00-11:00 Summary by personA with personeB, per-sonC, per sonD, かつややまもとさん,";
+// let personsArr = string.match(/[^, ]+(?=,)/gi);
+// console.log(personsArr);
 
 // let str = `Fancy Conf
 // on 2019/01/01
 // at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
 
 // [roomX]
-// 10:00-11:00 summary by personA; personB; per-sonC; per-sonD; かつややまもとさん;`;
+// 10:00-11:00 summary by personA; with personB; per-sonC; per-sonD; かつややまもとさん;`;
 
 // let res = str.split(" ");
 // //console.log(res)
