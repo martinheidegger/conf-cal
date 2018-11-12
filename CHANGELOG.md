@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.11.0"></a>
+# [2.11.0](https://github.com/martinheidegger/conf-cal/compare/v2.10.0...v2.11.0) (2018-11-12)
+
+
+### Bug Fixes
+
+* **lint:** some typos ([b31f0bd](https://github.com/martinheidegger/conf-cal/commit/b31f0bd))
+* **markdown:** fixed markdown renderer to output proper, better-readable markdown tables without special html tags. ([92b01c3](https://github.com/martinheidegger/conf-cal/commit/92b01c3))
+
+
+### Features
+
+* **lang:** added language support. closes [#2](https://github.com/martinheidegger/conf-cal/issues/2) ([e6911a0](https://github.com/martinheidegger/conf-cal/commit/e6911a0))
+
+
+
 <a name="2.10.0"></a>
 # [2.10.0](https://github.com/martinheidegger/conf-cal/compare/v2.9.1...v2.10.0) (2018-11-12)
 
