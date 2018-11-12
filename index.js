@@ -274,7 +274,7 @@ function processInput (options, string) {
     })
   } catch (err) {
     if (err instanceof CalError) {
-      let line = lines[err.line-1]
+      let line = lines[err.line - 1]
       err.message += '\n\nL' + err.line + ':' + line + '\n' + spaces(err.column - 1 + err.line.toString().length + 2) + '↑'
     }
     throw err

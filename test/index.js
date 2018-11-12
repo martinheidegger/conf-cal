@@ -1,4 +1,4 @@
-const { test, only } = require('tap')
+const { test } = require('tap')
 const confCal = require('..')
 const apiKey = process.env['GOOGLE_API_KEY']
 
@@ -507,7 +507,7 @@ test('specified ids are of higher importance than auto-ids', async t => {
 
 test('follow up indents that less than the documents indents should thrown an error', async t => {
   try {
-    const doc = await confCal({ apiKey }, `
+    await confCal({ apiKey }, `
       Some Conference
      on 2017/11/11`)
   } catch (e) {
