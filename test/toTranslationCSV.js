@@ -33,30 +33,30 @@ test('', async t => {
         by X
 
     16:20-17:20 Reflections
+    17:20-18:20 Q&A
 
     [roomB]
     10:20-11:20 Q&A
 
         This is different from Q&A than in the other room.
 
-    11:20-12:20 Reflections by X
-    12:20-13:20 Reflections by Y
-    13:40-14:10 Reflections by Y
+    11:20-12:20 Reflections
+    12:20-13:20 Reflections
   `)
-  t.equals(toTranslationCSV(cal), `Event A by X - summary,Event A
-Event A by X - description,"A simple description\ncan be fun"
-roomA: Q&A - summary,Q&A
+  t.equals(toTranslationCSV(cal), `#1 by X - summary,Event A
+#1 by X - description,"A simple description\ncan be fun"
+roomA#1: Q&A - summary,Q&A
+roomA#2: Q&A - summary,Q&A
 roomB: Q&A - summary,Q&A
 roomB: Q&A - description,This is different from Q&A than in the other room.
 Event C - summary,Event C
 Event C - description,Another description to translate
-#custom-id - summary,Event D
-#custom-id - description,Special id to be used for translation
-roomA#1: Reflections by X - summary,Reflections
-roomA#2: Reflections by X - summary,Reflections
-roomB: Reflections by X - summary,Reflections
-Reflections - summary,Reflections
-#1: Reflections by Y - summary,Reflections
-#2: Reflections by Y - summary,Reflections
+ID[custom-id] - summary,Event D
+ID[custom-id] - description,Special id to be used for translation
+#2 by X - summary,Reflections
+#3 by X - summary,Reflections
+roomA: Reflections - summary,Reflections
+roomB#1: Reflections - summary,Reflections
+roomB#2: Reflections - summary,Reflections
 `)
 })

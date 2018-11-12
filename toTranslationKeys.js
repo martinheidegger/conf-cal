@@ -1,8 +1,18 @@
 module.exports = function toTranslationKeys (cal) {
   const roomsByKey = {}
+  const nrByPerson = {}
   Object.keys(cal.rooms).forEach(room => {
     cal.rooms[room].forEach(entry => {
-      const key = entry.hasCustomId ? `#${entry.id}` : `${entry.summary}${entry.person ? ` by ${entry.person}` : ''}`
+      let key
+      if (entry.hasCustomId) {
+        key = `ID[${entry.id}]`
+      } else if (entry.person) {
+        const nr = (nrByPerson[entry.person] || 0) + 1
+        nrByPerson[entry.person] = nr
+        key = `#${nr} by ${entry.person}`
+      } else {
+        key = entry.summary
+      }
       let entriesByRoom = roomsByKey[key]
       if (!entriesByRoom) {
         entriesByRoom = {}
