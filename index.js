@@ -81,8 +81,19 @@ function processInput (options, string) {
     }
   }
 
+  function extractLang (roomEntry, lineIndex, columOffset) {
+    let langParts = /\s+in\s+([a-z]{2}(-[a-z]{2})?)$/ig.exec(roomEntry.summary)
+    if (langParts) {
+      roomEntry.summary = roomEntry.summary.substr(0, langParts.index)
+      roomEntry.lang = langParts[1]
+    } else {
+      roomEntry.lang = null
+    }
+  }
+
   function extractEntryMeta (roomEntry, lineIndex, columOffset) {
     extractId(roomEntry, lineIndex, columOffset)
+    extractLang(roomEntry, lineIndex, columOffset)
     extractPerson(roomEntry)
   }
 

@@ -29,6 +29,13 @@ function escape (options, context) {
   return String(context.string).replace(/\|/g, '&#124;').replace(/\n/gm, '<br/>')
 }
 
+function renderLang (options, context) {
+  if (!context.roomEntry || !context.roomEntry.lang) {
+    return ''
+  }
+  return ` ${options.lang} ${context.roomEntry.lang}`
+}
+
 function renderBy (options, context) {
   if (!context.roomEntry || !context.roomEntry.person) {
     return ''
@@ -49,6 +56,7 @@ function renderRoomListContent (options, context) {
     roomList: ''
   })
   ctx.roomPerson = options.renderBy(options, ctx)
+  ctx.roomLang = options.renderLang(options, ctx)
   return options.renderRoom(options, ctx)
 }
 
@@ -73,7 +81,7 @@ function renderRoom (options, context) {
   if (context.roomEntry.summary === null) {
     return options.renderBreak(options, context)
   }
-  return `${options.quickEscape(context.roomEntry.summary)}${context.roomPerson}${context.roomList}`
+  return `${options.quickEscape(context.roomEntry.summary)}${context.roomPerson}${context.roomLang}${context.roomList}`
 }
 
 function renderSingleRoom (options, context) {
@@ -96,6 +104,7 @@ function renderRooms (options, context) {
     context.room = slotEntry.room
     context.roomEntry = slotEntry.entry
     context.roomPerson = options.renderBy(options, context)
+    context.roomLang = options.renderLang(options, context)
     context.roomList = options.renderRoomList(options, context)
     let result
     if (context.data.rooms.length === 1) {
@@ -107,6 +116,7 @@ function renderRooms (options, context) {
     delete context.roomEntry
     delete context.roomPerson
     delete context.roomList
+    delete context.roomLang
     return result
   }
   return context.data.rooms.map(room => {
@@ -114,6 +124,7 @@ function renderRooms (options, context) {
     context.roomEntry = slotEntry.entries[room]
     if (context.roomEntry) {
       context.roomPerson = options.renderBy(options, context)
+      context.roomLang = options.renderLang(options, context)
       context.roomList = options.renderRoomList(options, context)
     }
     const result = options.renderRoom(options, context)
@@ -121,6 +132,7 @@ function renderRooms (options, context) {
     delete context.roomEntry
     delete context.roomPerson
     delete context.roomList
+    delete context.roomLang
     return result
   }).join(options.columnSeperator)
 }
@@ -177,6 +189,7 @@ const defaults = {
   footer: '', // Footer to be appended on the list
   breakWord: 'Break', // Keyword to be inserted in a break
   by: 'by', // Keywork to be used to prefix the presenter
+  lang: 'in', // Keyword to be used to prefix the language
   cont: '⤓', // If the former entry continues in this slot
   left: '←', // Single room: for empty rooms, where the full room is on the left
   right: '→', // Single room: for empty rooms, where the full room is on the right
@@ -211,6 +224,7 @@ const defaults = {
   renderBreak,
   renderFullBreak,
   renderBy,
+  renderLang,
   escape
 }
 

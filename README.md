@@ -21,6 +21,7 @@ It makes sure that all the important data is there:
 - Automatic Slot Calculation _(just enter the times and it can figure out the slots)_
 - Automatically generates IDs for each entry that can be overridden
     _(to preserve deep links even when data changes)_
+- Presentation languages _(to mark different presentations in different languages)
 
 You can process this format with a **very lightweight** Node JS library.
 
@@ -46,7 +47,7 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     - Lassos materials by Wonder Woman
     - Leveraging water in battle by Wolverine
     - Why we need friends by The Hulk
-    - 楽しい CM の作り方 by ウルトラマン
+    - 楽しい CM の作り方 by ウルトラマン in ja
 
 [Track A]
 10:20-11:00 Doing the right thing by Super Man #keynote
@@ -70,7 +71,7 @@ on <year>/<month>/<date>
 at <name-of-location>#<google-place-id>
 
 [<room-name>]
-<start>-<end> <summary>( by <person>)( #<custom-id>)
+<start>-<end> <summary>( by <person>)( in <lang-code>)( #<custom-id>)
 <four-space-indent><<line-break><description>> or list of subentries>
 
 [<other-room-name>]

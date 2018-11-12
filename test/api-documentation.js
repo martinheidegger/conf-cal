@@ -25,7 +25,7 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     - Lassos materials by Wonder Woman
     - Leveraging water in battle by Wolverine
     - Why we need friends by The Hulk
-    - 楽しい CM の作り方 by ウルトラマン
+    - 楽しい CM の作り方 by ウルトラマン in ja
 
 [Track A]
 10:20-11:00 Doing the right thing by Super Man #keynote
@@ -110,7 +110,7 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
 | 11:00-11:15 | [Break] | [Break] |
 | 11:15-12:00 | What I love about underground sountracks _by Batman_ | Akward bumps of 2018 _by The Flash_ |
 | 12:00-13:00 | [Break] | ⤓ |
-| 13:00-14:00 | Lighting talks<br/><ul><li>Lassos materials _by Wonder Woman_</li><li>Leveraging water in battle _by Wolverine_</li><li>Why we need friends _by The Hulk_</li><li>楽しい CM の作り方 _by ウルトラマン_</li></ul> | ⤓ |
+| 13:00-14:00 | Lighting talks<br/><ul><li>Lassos materials _by Wonder Woman_</li><li>Leveraging water in battle _by Wolverine_</li><li>Why we need friends _by The Hulk_</li><li>楽しい CM の作り方 _by ウルトラマン_ in ja</li></ul> | ⤓ |
 `,
     'Turn can the calendar into a markdown calendar!'
   )

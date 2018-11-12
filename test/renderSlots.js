@@ -50,6 +50,7 @@ test('rendering a multiline slot with a list', async t => {
         end: '2017-11-25T01:00:00.000Z',
         summary: 'x',
         person: 'a',
+        lang: 'en',
         entries: [
           { summary: 'y', person: 'b' },
           { summary: 'z', person: 'c' }
@@ -61,7 +62,7 @@ test('rendering a multiline slot with a list', async t => {
   t.equals(rendered, `
 |  | a |
 | --- | --- |
-| 9:00-10:00 | x _by a_<br/><ul><li>y _by b_</li><li>z _by c_</li></ul> |
+| 9:00-10:00 | x _by a_ in en<br/><ul><li>y _by b_</li><li>z _by c_</li></ul> |
 `)
 })
 

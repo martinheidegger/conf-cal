@@ -5,6 +5,9 @@ function e (entry) {
   if (!entry.person) {
     entry.person = null
   }
+  if (!entry.lang) {
+    entry.lang = null
+  }
   return entry
 }
 
@@ -30,7 +33,7 @@ test('test with very simple data', async t => {
 test('single room', async t => {
   const slots = slotsForRooms('Asia/Tokyo', {
     a: [
-      e({ id: '1-1', start: '11:00', end: '12:00', summary: 'x', person: 'a' }),
+      e({ id: '1-1', start: '11:00', end: '12:00', summary: 'x', person: 'a', lang: 'en' }),
       e({ id: '1-2', start: '12:00', end: '13:00', summary: 'y' })
     ]
   })
@@ -40,7 +43,7 @@ test('single room', async t => {
       end: '12:00',
       room: 'a',
       entry:
-        e({ id: '1-1', start: '11:00', end: '12:00', summary: 'x', person: 'a', rowSpan: 1 })
+        e({ id: '1-1', start: '11:00', end: '12:00', summary: 'x', person: 'a', lang: 'en', rowSpan: 1 })
     },
     {
       start: '12:00',
@@ -242,16 +245,16 @@ test('test with closings and openings', async t => {
   const slots = slotsForRooms('Asia/Tokyo', {
     a: [
       e({ id: '1-1', start: '11:00', end: '11:20', summary: 'opening' }),
-      e({ id: '1-2', start: '11:20', end: '12:00', summary: 'x', person: 'A' }),
-      e({ id: '1-3', start: '12:00', end: '13:30', summary: 'y', person: 'B' }),
-      e({ id: '1-4', start: '14:00', end: '15:00', summary: 'z', person: 'C' }),
+      e({ id: '1-2', start: '11:20', end: '12:00', summary: 'x', person: 'A', lang: null }),
+      e({ id: '1-3', start: '12:00', end: '13:30', summary: 'y', person: 'B', lang: null }),
+      e({ id: '1-4', start: '14:00', end: '15:00', summary: 'z', person: 'C', lang: null }),
       e({ id: '1-5', start: '15:00', end: '15:30', summary: 'closing' })
     ],
     b: [
-      e({ id: '2-1', start: '11:20', end: '15:00', summary: 'w', person: 'D' })
+      e({ id: '2-1', start: '11:20', end: '15:00', summary: 'w', person: 'D', lang: null })
     ],
     c: [
-      e({ id: '3-1', start: '11:20', end: '13:30', summary: 'f', person: 'E' })
+      e({ id: '3-1', start: '11:20', end: '13:30', summary: 'f', person: 'E', lang: null })
     ]
   })
   t.deepEquals(slots.slots, [
@@ -266,16 +269,16 @@ test('test with closings and openings', async t => {
       start: '11:20',
       end: '12:00',
       entries: {
-        a: e({ id: '1-2', start: '11:20', end: '12:00', summary: 'x', person: 'A', rowSpan: 1 }),
-        b: e({ id: '2-1', start: '11:20', end: '15:00', summary: 'w', person: 'D', rowSpan: 4 }),
-        c: e({ id: '3-1', start: '11:20', end: '13:30', summary: 'f', person: 'E', rowSpan: 2 })
+        a: e({ id: '1-2', start: '11:20', end: '12:00', summary: 'x', person: 'A', lang: null, rowSpan: 1 }),
+        b: e({ id: '2-1', start: '11:20', end: '15:00', summary: 'w', person: 'D', lang: null, rowSpan: 4 }),
+        c: e({ id: '3-1', start: '11:20', end: '13:30', summary: 'f', person: 'E', lang: null, rowSpan: 2 })
       }
     },
     {
       start: '12:00',
       end: '13:30',
       entries: {
-        a: e({ id: '1-3', start: '12:00', end: '13:30', summary: 'y', person: 'B', rowSpan: 1 })
+        a: e({ id: '1-3', start: '12:00', end: '13:30', summary: 'y', person: 'B', lang: null, rowSpan: 1 })
       }
     },
     {
@@ -290,7 +293,7 @@ test('test with closings and openings', async t => {
       start: '14:00',
       end: '15:00',
       entries: {
-        a: e({ id: '1-4', start: '14:00', end: '15:00', summary: 'z', person: 'C', rowSpan: 1 })
+        a: e({ id: '1-4', start: '14:00', end: '15:00', summary: 'z', person: 'C', lang: null, rowSpan: 1 })
       }
     },
     {
