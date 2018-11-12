@@ -166,6 +166,8 @@ function processInput (options, string) {
     const lineIndent = /^([ ]*)/g.exec(line)[0].length
     if (docIndent === -1) {
       docIndent = lineIndent
+    } else if (lineIndent < docIndent) {
+      throw new CalError('invalid-indent', `The file's indent is derminded in the first line to be ${docIndent} spaces, it was ${lineIndent} spaces.`, lineIndex, lineIndent)
     }
     if (processRoom(line, lineIndex)) {
       return

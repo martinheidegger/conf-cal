@@ -463,3 +463,17 @@ test('specified ids are of higher importance than auto-ids', async t => {
   t.deepEquals(doc.entries['$1-1'].summary, 'eventA')
   t.deepEquals(doc.entries['1-1'].summary, 'eventB')
 })
+
+test('follow up indents that less than the documents indents should thrown an error', async t => {
+  try {
+    const doc = await confCal({ apiKey }, `
+      Some Conference
+     on 2017/11/11`)
+  } catch (e) {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
+      throw e
+    }
+    t.equals(e.line, 3)
+    t.equals(e.column, 6)
+  }
+})
