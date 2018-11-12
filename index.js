@@ -181,9 +181,6 @@ function processInput (options, string) {
     const contIndent = contParts[1].length
     if (contParts && contIndent >= (docIndent + MD_INDENT) && formerRoom) {
       let nextLine = contParts[2].trim()
-      if (contIndent < (indent + MD_INDENT)) {
-        throw new CalError('invalid-data', `Multiline indents need to be properly indented, expected indent: ${indent + MD_INDENT}, actual: ${contIndent}`, lineIndex - 1, contParts[1].length)
-      }
       let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
       if (!continueLine) {
         const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
