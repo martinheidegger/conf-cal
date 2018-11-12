@@ -68,14 +68,6 @@ function processInput (options, string) {
   let restrictIndent = -1
   let continueDescription = false
   let wasEmpty = false
-  lines.forEach((line, lineIndex) => {
-    if (isEmptyLine(line)) {
-      wasEmpty = true
-      return // empty lines
-    }
-    processLine(line, lineIndex)
-    wasEmpty = false
-  })
 
   function extractId (roomEntry, lineIndex, columOffset) {
     let idParts = /\s+#([a-zA-Z0-9-._~:@/?!$&'()*+,;=]*)/ig.exec(roomEntry.summary)
@@ -269,7 +261,23 @@ function processInput (options, string) {
         }
       }
     }
-    throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, lineIndent)
+    throw new CalError('invalid-data', `Unprocessable line.`, lineIndex, lineIndent)
+  }
+  try {
+    lines.forEach((line, lineIndex) => {
+      if (isEmptyLine(line)) {
+        wasEmpty = true
+        return // empty lines
+      }
+      processLine(line, lineIndex)
+      wasEmpty = false
+    })
+  } catch (err) {
+    if (err instanceof CalError) {
+      let line = lines[err.line-1]
+      err.message += '\n\nL' + err.line + ':' + line + '\n' + spaces(err.column - 1 + err.line.toString().length + 2) + '↑'
+    }
+    throw err
   }
   checkMissing(lines.length - 1)
   return getTimezone(options, doc.googleObjectId)
@@ -281,6 +289,10 @@ function processInput (options, string) {
       doc.entries = entries
       return doc
     })
+}
+
+function spaces (count) {
+  return new Array(count + 1).join(' ')
 }
 
 function applyTimeZone (rooms, timeZone) {
