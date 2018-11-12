@@ -169,7 +169,7 @@ function processInput (options, string) {
     if (docIndent === -1) {
       docIndent = lineIndent
     } else if (lineIndent < docIndent) {
-      throw new CalError('invalid-indent', `The file's indent is derminded in the first line to be ${docIndent} spaces, it was ${lineIndent} spaces.`, lineIndex, lineIndent)
+      throw new CalError('invalid-indent', `The document's indent is derminded in the first line to be ${docIndent} spaces, it is ${lineIndent} spaces at line ${lineIndex}`, lineIndex, lineIndent)
     }
     if (processRoom(line, lineIndex)) {
       return
