@@ -33,11 +33,6 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
 
 [Main Room]
 10:00-10:20 Opening
-10:20-11:00 Doing the right thing by Super Man #keynote
-
-    Super Man will talk about the challenges he faced
-    trying to do the right thing when you are
-    basically a god
 
 11:15-12:00 What I love about underground sountracks by Batman
 
@@ -51,8 +46,15 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     - Lassos materials by Wonder Woman
     - Leveraging water in battle by Wolverine
     - Why we need friends by The Hulk
+    - 楽しい CM の作り方 by ウルトラマン
 
 [Track A]
+10:20-11:00 Doing the right thing by Super Man #keynote
+  
+    Super Man will talk about the challenges he faced
+    trying to do the right thing when you are
+    basically a god
+
 11:15-14:00 Akward bumps of 2018 by The Flash #flash-talk
 
     Its not always easy to travel quickly without colliding

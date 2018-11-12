@@ -12,11 +12,6 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
 
 [Main Room]
 10:00-10:20 Opening
-10:20-11:00 Doing the right thing by Super Man #keynote
-  
-    Super Man will talk about the challenges he faced
-    trying to do the right thing when you are
-    basically a god
 
 11:15-12:00 What I love about underground sountracks by Batman
 
@@ -30,8 +25,15 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     - Lassos materials by Wonder Woman
     - Leveraging water in battle by Wolverine
     - Why we need friends by The Hulk
+    - 楽しい CM の作り方 by ウルトラマン
 
 [Track A]
+10:20-11:00 Doing the right thing by Super Man #keynote
+  
+    Super Man will talk about the challenges he faced
+    trying to do the right thing when you are
+    basically a god
+
 11:15-14:00 Akward bumps of 2018 by The Flash #flash-talk
 
     Its not always easy to travel quickly without colliding
@@ -87,13 +89,13 @@ test('PROJECT USAGE', async t => {
 
   t.deepEquals(
     calendar.persons,
-    ['Super Man', 'Batman', 'Wonder Woman', 'Wolverine', 'The Hulk', 'The Flash'],
+    ['Batman', 'Wonder Woman', 'Wolverine', 'The Hulk', 'ウルトラマン', 'Super Man', 'The Flash'],
     'There is also a handy list of all the persons that appear in this calendar.'
   )
 
   t.equals(
     calendar.rooms['Main Room'].length,
-    4,
+    3,
     'The room contains a list of entries for that room'
   )
 
@@ -103,12 +105,12 @@ test('PROJECT USAGE', async t => {
 at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215bd9ebd:0x576dcf806abbab2)
 |  | Main Room | Track A |
 | --- | --- | --- |
-| 10:00-10:20 | Main Room: Opening |
-| 10:20-11:00 | Main Room: Doing the right thing by Super Man |
-| 11:00-11:15 | <Break> |
-| 11:15-12:00 | What I love about underground sountracks by Batman | Akward bumps of 2018 by The Flash |
-| 12:00-13:00 | [Break] |  |
-| 13:00-14:00 | Lighting talks<br/><ul><li>Lassos materials by Wonder Woman</li><li>Leveraging water in battle by Wolverine</li><li>Why we need friends by The Hulk</li></ul> |  |
+| 10:00-10:20 | Opening | ← |
+| 10:20-11:00 | → | Doing the right thing _by Super Man_ |
+| 11:00-11:15 | [Break] | [Break] |
+| 11:15-12:00 | What I love about underground sountracks _by Batman_ | Akward bumps of 2018 _by The Flash_ |
+| 12:00-13:00 | [Break] | ⤓ |
+| 13:00-14:00 | Lighting talks<br/><ul><li>Lassos materials _by Wonder Woman_</li><li>Leveraging water in battle _by Wolverine_</li><li>Why we need friends _by The Hulk_</li><li>楽しい CM の作り方 _by ウルトラマン_</li></ul> | ⤓ |
 `,
     'Turn can the calendar into a markdown calendar!'
   )
@@ -251,7 +253,7 @@ the funniest bumps of the last year.`,
 
   t.equals(
     calendar.entries[theFlashTalk.id],
-    calendar.rooms['Track A'][0],
+    calendar.rooms['Track A'][1],
     'The entries array contains a nice list of all entries in "rooms" ...'
   )
 

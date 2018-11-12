@@ -61,7 +61,7 @@ test('rendering a multiline slot with a list', async t => {
   t.equals(rendered, `
 |  | a |
 | --- | --- |
-| 9:00-10:00 | x by a<br/><ul><li>y by b</li><li>z by c</li></ul> |
+| 9:00-10:00 | x _by a_<br/><ul><li>y _by b_</li><li>z _by c_</li></ul> |
 `)
 })
 
@@ -79,7 +79,7 @@ test('rendering with escape characters in the room, summary and person', async t
   t.equals(rendered, `
 |  | &#124;a&#124; |
 | --- | --- |
-| 9:00-10:00 | &#124;x&#124; by &#124;y&#124; |
+| 9:00-10:00 | &#124;x&#124; _by &#124;y&#124;_ |
 `)
 })
 
@@ -195,17 +195,17 @@ test('rendering of two slots with breaks and spaces', async t => {
   t.equals(rendered, `
 |  | a | b |
 | --- | --- | --- |
-| 9:00-10:00 | a: x |
-| 10:00-11:00 | <Break> |
-| 11:00-12:00 | a: y |
+| 9:00-10:00 | x | ← |
+| 10:00-11:00 | [Break] | [Break] |
+| 11:00-12:00 | y | ← |
 | 12:00-13:00 | y | 1 |
-| 13:00-14:00 |  | [Break] |
-| 14:00-15:00 |  | 2 |
-| 15:00-16:00 | <Break> |
+| 13:00-14:00 | ⤓ | [Break] |
+| 14:00-15:00 | ⤓ | 2 |
+| 15:00-16:00 | [Break] | [Break] |
 | 16:00-17:00 | z | 3 |
 | 17:00-18:00 | [Break] | 4 |
 | 18:00-19:00 | z' | 5 |
-| 19:00-20:00 | b: 6 |
-| 20:00-21:00 | b: 7 |
+| 19:00-20:00 | → | 6 |
+| 20:00-21:00 | → | 7 |
 `)
 })

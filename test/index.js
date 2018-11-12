@@ -430,9 +430,9 @@ test('markdown rendering for doc', async t => {
 at [Abbots place](https://maps.google.com/?q=Hell,+MI+48169,+USA&ftid=0x882334578757ad71:0xd45079770956618a)
 |  | roomA | roomB |
 | --- | --- | --- |
-| 10:00-12:00 | roomA: eventA by X<br/><ul><li>eventA1 by X</li></ul> |
+| 10:00-12:00 | eventA _by X_<br/><ul><li>eventA1 _by X_</li></ul> | ← |
 | 12:00-12:10 | eventB | [Break] |
-| 12:10-13:00 |  | eventC by Y<br/><ul><li>eventD by Z</li><li>eventE</li><li>eventF</li></ul> |
+| 12:10-13:00 | ⤓ | eventC _by Y_<br/><ul><li>eventD _by Z_</li><li>eventE</li><li>eventF</li></ul> |
 `)
 })
 

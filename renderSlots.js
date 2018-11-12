@@ -17,7 +17,8 @@ function renderRow (options, context) {
 }
 
 function renderFullBreak (options, context) {
-  return `<${options.breakWord}>`
+  const br = options.renderBreak(options, context)
+  return br + new Array(context.data.rooms.length).join(`${options.columnSeperator}${br}`)
 }
 
 function renderBreak (options, context) {
@@ -33,7 +34,7 @@ function renderBy (options, context) {
     return ''
   }
   context.string = context.roomEntry.person
-  const result = `${options.by}${options.escape(options, context)}`
+  const result = ` _${options.by} ${options.escape(options, context)}_`
   delete context.string
   return result
 }
@@ -45,7 +46,6 @@ function renderRoomListEntry (options, context) {
 function renderRoomListContent (options, context) {
   const ctx = Object.assign({}, context, {
     roomEntry: context.roomListEntry,
-    roomPerson: '',
     roomList: ''
   })
   ctx.roomPerson = options.renderBy(options, ctx)
@@ -68,7 +68,7 @@ function renderRoomList (options, context) {
 
 function renderRoom (options, context) {
   if (!context.roomEntry) {
-    return ''
+    return options.cont
   }
   if (context.roomEntry.summary === null) {
     return options.renderBreak(options, context)
@@ -77,7 +77,14 @@ function renderRoom (options, context) {
 }
 
 function renderSingleRoom (options, context) {
-  return `${context.room}: ${options.renderRoom(options, context)}`
+  let found = false
+  return context.data.rooms.map(room => {
+    if (context.slotEntry.room === room) {
+      found = true
+      return options.renderRoom(options, context)
+    }
+    return found ? options.left : options.right
+  }).join(options.columnSeperator)
 }
 
 function renderRooms (options, context) {
@@ -166,19 +173,29 @@ function quickEscape (options, context, string) {
 }
 
 const defaults = {
-  header: '\n',
-  footer: '',
-  breakWord: 'Break',
-  by: ' by ',
-  rowHeader: '| ',
-  rowFooter: ' |',
-  columnSeperator: ' | ',
-  rowSeperator: '\n',
-  headerSeperator: '---',
-  listHeader: '<br/><ul>',
-  listSeperator: '</li>',
-  listBullet: '<li>',
-  listFooter: '</li></ul>',
+  header: '\n', // Header to be prepended to the list
+  footer: '', // Footer to be appended on the list
+  breakWord: 'Break', // Keyword to be inserted in a break
+  by: 'by', // Keywork to be used to prefix the presenter
+  cont: '⤓', // If the former entry continues in this slot
+  left: '←', // Single room: for empty rooms, where the full room is on the left
+  right: '→', // Single room: for empty rooms, where the full room is on the right
+  rowHeader: '| ', // prefix for a row
+  rowFooter: ' |', // suffix for a row
+  columnSeperator: ' | ', // seperator between each column
+  rowSeperator: '\n', // seperator between each row
+  headerSeperator: '---', // seperator between head and body
+  listHeader: '<br/><ul>', // header before a list of entries in an entry
+  listSeperator: '</li>', // suffix to be added to an list entry
+  listBullet: '<li>', // prefix to be added to an list entry
+  listFooter: '</li></ul>', // suffix to be added after the list
+  //
+  // All render methods are called with (options, context)
+  //
+  // where 'options' is this passed-in options and context
+  // is transformed before each call. The context always
+  // contains a 'data' property that contains the slotData
+  //
   render,
   renderRow,
   renderHeader,
