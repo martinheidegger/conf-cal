@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.10.0"></a>
+# [2.10.0](https://github.com/martinheidegger/conf-cal/compare/v2.9.1...v2.10.0) (2018-11-12)
+
+
+### Bug Fixes
+
+* Added check to make sure that the document has consistent index and a clear error message if it doesnt. ([00b8598](https://github.com/martinheidegger/conf-cal/commit/00b8598))
+* Added check to make sure that the document has consistent index and a clear error message if it doesnt. - 2 ([ac5bf54](https://github.com/martinheidegger/conf-cal/commit/ac5bf54))
+* Made sure that sub-indentations don't cause the creation of new rooms. Fixes [#11](https://github.com/martinheidegger/conf-cal/issues/11) ([63cad75](https://github.com/martinheidegger/conf-cal/commit/63cad75))
+
+
+### Features
+
+* Added line output to calendar error entry with highlighting of columns. ([9d9ffcb](https://github.com/martinheidegger/conf-cal/commit/9d9ffcb))
+
+
+
 <a name="2.9.1"></a>
 ## [2.9.1](https://github.com/martinheidegger/conf-cal/compare/v2.9.0...v2.9.1) (2018-11-08)
 
