@@ -32,7 +32,7 @@ at Top of the World#ChIJvZ69FaJU6DkRsrqrBvjcdgU
     - Why we need friends by The Hulk
 
 [Track A]
-11:15-14:00 Akward bumps of 2018 by The Flash
+11:15-14:00 Akward bumps of 2018 by The Flash #flash-talk
 
     Its not always easy to travel quickly without colliding
     with things. Lightheartedly, the flash will reflect on
@@ -194,6 +194,12 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
   )
 
   const theFlashTalk = slotData.slots[3].entries['Track A']
+  t.equals(
+    theFlashTalk.id,
+    'flash-talk',
+    'The id can be overwritten!'
+  )
+
   t.equals(
     theFlashTalk.description,
     `Its not always easy to travel quickly without colliding
