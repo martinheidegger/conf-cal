@@ -21,7 +21,7 @@
     "geo-tz": "^4.0.2",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.22.2",
-    "moment-timezone": "^0.5.21"
+    "moment-timezone": "^0.5.23"
   },
   "devDependencies": {
     "standard": "^12.0.1",
