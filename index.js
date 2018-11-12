@@ -103,7 +103,7 @@ function processInput (options, string) {
   }
 
   function processRoom (line, lineIndex) {
-    const r = /^\s*\[(.*)\]\s*$/ig.exec(line)
+    const r = /^\[(.*)\]\s*$/ig.exec(line)
     if (r) {
       room = r[1]
       roomData = []
@@ -114,15 +114,15 @@ function processInput (options, string) {
     }
   }
 
-  function processHeader (line, lineIndex) {
+  function processHeader (line, lineIndex, columOffset) {
     if (!room) {
-      const loc = /^\s*at ([^#]*)#(.*)\s*$/ig.exec(line)
+      const loc = /^at ([^#]*)#(.*)\s*$/ig.exec(line)
       if (loc) {
         doc.location = loc[1]
         doc.googleObjectId = loc[2]
         return true
       }
-      const time = /^\s*on ([0-9]{4})\/([0-9]{2})\/([0-9]{2})\s*$/ig.exec(line)
+      const time = /^on ([0-9]{4})\/([0-9]{2})\/([0-9]{2})\s*$/ig.exec(line)
       if (time) {
         doc.date = `${time[1]}${time[2]}${time[3]}`
         return true
@@ -131,24 +131,24 @@ function processInput (options, string) {
         doc.title = line.trim()
         return true
       }
-      throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex)
+      throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex, columOffset)
     }
   }
 
-  function processDateLine (line, lineIndex) {
-    const parts = /^((\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*)(.*)\s*$/ig.exec(line)
+  function processDateLine (line, lineIndex, columnOffset) {
+    const parts = /^(([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*)(.*)\s*$/ig.exec(line)
     if (parts) {
       if (continueLine) {
-        throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[2].length)
+        throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, columnOffset)
       }
       const roomEntry = {
         auto_id: `${roomIndex}-${roomData.length + 1}`,
-        start: `${doc.date}T${parts[3]}${parts[4]}00`,
-        end: `${doc.date}T${parts[5]}${parts[6]}00`,
-        summary: parts[7]
+        start: `${doc.date}T${parts[2]}${parts[3]}00`,
+        end: `${doc.date}T${parts[4]}${parts[5]}00`,
+        summary: parts[6]
       }
       continueDescription = false
-      continueLine = processFirstEntryLine(roomEntry, lineIndex, parts[1].length)
+      continueLine = processFirstEntryLine(roomEntry, lineIndex, columnOffset + parts[1].length)
       roomEntry.summary = roomEntry.summary.trim()
       if (roomEntry.person) {
         persons[roomEntry.person] = true
@@ -163,7 +163,9 @@ function processInput (options, string) {
   }
 
   function processLine (line, lineIndex) {
-    const lineIndent = /^([ ]*)/g.exec(line)[0].length
+    const lineParts = /^([ ]*)(.*)/g.exec(line)
+    const lineIndent = lineParts[1].length
+    line = lineParts[2]
     if (docIndent === -1) {
       docIndent = lineIndent
     } else if (lineIndent < docIndent) {
@@ -172,17 +174,15 @@ function processInput (options, string) {
     if (processRoom(line, lineIndex)) {
       return
     }
-    if (processHeader(line, lineIndex)) {
+    if (processHeader(line, lineIndex, lineIndent)) {
       return
     }
-    if (processDateLine(line, lineIndex)) {
+    if (processDateLine(line, lineIndex, lineIndent)) {
       return
     }
-    const contParts = /^(\s+)(.*)$/ig.exec(line)
     const formerRoom = roomData[roomData.length - 1]
-    const contIndent = contParts[1].length
-    if (contParts && contIndent >= (docIndent + MD_INDENT) && formerRoom) {
-      let nextLine = contParts[2].trim()
+    if (lineIndent >= (docIndent + MD_INDENT) && formerRoom) {
+      let nextLine = line.trim()
       let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
       if (!continueLine) {
         const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
@@ -198,7 +198,7 @@ function processInput (options, string) {
             entries[roomEntry.id] = roomEntry
           }
           entriesList.push(roomEntry)
-          continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + contParts[1].length)
+          continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + lineIndent)
           roomEntry.summary = roomEntry.summary.trim()
           if (roomEntry.person) {
             persons[roomEntry.person] = true
@@ -230,7 +230,7 @@ function processInput (options, string) {
       roomEntry.summary += nextLine
       return
     }
-    throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, contParts && contParts[1].length)
+    throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, lineIndent)
   }
   checkMissing(lines.length - 1)
   return getTimezone(options, doc.googleObjectId)
