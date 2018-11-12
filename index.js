@@ -115,24 +115,22 @@ function processInput (options, string) {
   }
 
   function processHeader (line, lineIndex, columOffset) {
-    if (!room) {
-      const loc = /^at ([^#]*)#(.*)\s*$/ig.exec(line)
-      if (loc) {
-        doc.location = loc[1]
-        doc.googleObjectId = loc[2]
-        return true
-      }
-      const time = /^on ([0-9]{4})\/([0-9]{2})\/([0-9]{2})\s*$/ig.exec(line)
-      if (time) {
-        doc.date = `${time[1]}${time[2]}${time[3]}`
-        return true
-      }
-      if (!doc.title) {
-        doc.title = line.trim()
-        return true
-      }
-      throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex, columOffset)
+    const loc = /^at ([^#]*)#(.*)\s*$/ig.exec(line)
+    if (loc) {
+      doc.location = loc[1]
+      doc.googleObjectId = loc[2]
+      return true
     }
+    const time = /^on ([0-9]{4})\/([0-9]{2})\/([0-9]{2})\s*$/ig.exec(line)
+    if (time) {
+      doc.date = `${time[1]}${time[2]}${time[3]}`
+      return true
+    }
+    if (!doc.title) {
+      doc.title = line.trim()
+      return true
+    }
+    throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex, columOffset)
   }
 
   function processDateLine (line, lineIndex, columnOffset) {
@@ -162,23 +160,9 @@ function processInput (options, string) {
     }
   }
 
-  function processLine (line, lineIndex) {
-    const lineParts = /^([ ]*)(.*)/g.exec(line)
-    const lineIndent = lineParts[1].length
-    line = lineParts[2]
-    if (docIndent === -1) {
-      docIndent = lineIndent
-    } else if (lineIndent < docIndent) {
-      throw new CalError('invalid-indent', `The document's indent is derminded in the first line to be ${docIndent} spaces, it is ${lineIndent} spaces at line ${lineIndex}`, lineIndex, lineIndent)
-    }
-    if (processRoom(line, lineIndex)) {
-      return
-    }
-    if (processHeader(line, lineIndex, lineIndent)) {
-      return
-    }
+  function processBody (line, lineIndex, lineIndent) {
     if (processDateLine(line, lineIndex, lineIndent)) {
-      return
+      return true
     }
     const formerRoom = roomData[roomData.length - 1]
     if (lineIndent >= (docIndent + MD_INDENT) && formerRoom) {
@@ -205,7 +189,7 @@ function processInput (options, string) {
           }
           roomEntry.parent = formerRoom
           formerRoom.entries.push(roomEntry)
-          return
+          return true
         }
         nextLine = '\n' + nextLine
       } else {
@@ -220,15 +204,38 @@ function processInput (options, string) {
           nextLine = '\n' + nextLine
         }
         roomEntry.description += nextLine
-        return
+        return true
       }
       if (wasEmpty) {
         continueDescription = true
         roomEntry.description = nextLine.substr(1)
-        return
+        return true
       }
       roomEntry.summary += nextLine
+      return true
+    }
+  }
+
+  function processLine (line, lineIndex) {
+    const lineParts = /^([ ]*)(.*)/g.exec(line)
+    const lineIndent = lineParts[1].length
+    line = lineParts[2]
+    if (docIndent === -1) {
+      docIndent = lineIndent
+    } else if (lineIndent < docIndent) {
+      throw new CalError('invalid-indent', `The document's indent is derminded in the first line to be ${docIndent} spaces, it is ${lineIndent} spaces at line ${lineIndex}`, lineIndex, lineIndent)
+    }
+    if (processRoom(line, lineIndex)) {
       return
+    }
+    if (room === null) {
+      if (processHeader(line, lineIndex, lineIndent)) {
+        return
+      }
+    } else {
+      if (processBody(line, lineIndex, lineIndent)) {
+        return
+      }
     }
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, lineIndent)
   }
