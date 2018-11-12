@@ -88,13 +88,13 @@ function processInput (options, string) {
     }
   }
 
-  function extractRoomInfo (roomEntry, lineIndex, columOffset) {
+  function extractEntryMeta (roomEntry, lineIndex, columOffset) {
     extractId(roomEntry, lineIndex, columOffset)
     extractPerson(roomEntry)
   }
 
   function processFirstLine (roomEntry, lineIndex, columOffset) {
-    extractRoomInfo(roomEntry, lineIndex, columOffset)
+    extractEntryMeta(roomEntry, lineIndex, columOffset)
     const continueLine = /\\$/ig.test(roomEntry.summary)
     if (continueLine) {
       roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
