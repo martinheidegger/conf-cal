@@ -65,6 +65,7 @@ function processInput (options, string) {
   let roomData = null
   let continueLine = false
   let docIndent = -1
+  let restrictIndent = -1
   let continueDescription = false
   let wasEmpty = false
   lines.forEach((line, lineIndex) => {
@@ -114,7 +115,17 @@ function processInput (options, string) {
     }
   }
 
-  function processHeader (line, lineIndex, columOffset) {
+  function assertStrictIndent (lineIndex, lineIndent) {
+    if (lineIndent !== docIndent) {
+      throw new CalError('invalid-indent', `The document's indent is derminded in the first line to be ${docIndent} spaces, it is ${lineIndent} spaces at line ${lineIndex}`, lineIndex, lineIndent)
+    }
+  }
+
+  function processHeader (line, lineIndex, lineIndent) {
+    assertStrictIndent(lineIndex, lineIndent)
+    if (processRoom(line, lineIndex)) {
+      return true
+    }
     const loc = /^at ([^#]*)#(.*)\s*$/ig.exec(line)
     if (loc) {
       doc.location = loc[1]
@@ -130,7 +141,7 @@ function processInput (options, string) {
       doc.title = line.trim()
       return true
     }
-    throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex, columOffset)
+    throw new CalError('invalid-data', `Unknown header "${line}"`, lineIndex, lineIndent)
   }
 
   function processDateLine (line, lineIndex, columnOffset) {
@@ -147,6 +158,9 @@ function processInput (options, string) {
       }
       continueDescription = false
       continueLine = processFirstEntryLine(roomEntry, lineIndex, columnOffset + parts[1].length)
+      if (continueLine) {
+        restrictIndent = docIndent + MD_INDENT
+      }
       roomEntry.summary = roomEntry.summary.trim()
       if (roomEntry.person) {
         persons[roomEntry.person] = true
@@ -160,11 +174,7 @@ function processInput (options, string) {
     }
   }
 
-  function processBody (line, lineIndex, lineIndent) {
-    if (processDateLine(line, lineIndex, lineIndent)) {
-      return true
-    }
-    const formerRoom = roomData[roomData.length - 1]
+  function processBody (formerRoom, line, lineIndex, lineIndent) {
     if (lineIndent >= (docIndent + MD_INDENT) && formerRoom) {
       let nextLine = line.trim()
       let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
@@ -183,6 +193,9 @@ function processInput (options, string) {
           }
           entriesList.push(roomEntry)
           continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + lineIndent)
+          if (continueLine) {
+            restrictIndent = docIndent + MD_INDENT + MD_INDENT
+          }
           roomEntry.summary = roomEntry.summary.trim()
           if (roomEntry.person) {
             persons[roomEntry.person] = true
@@ -198,6 +211,9 @@ function processInput (options, string) {
       continueLine = /\\$/ig.test(nextLine)
       if (continueLine) {
         nextLine = nextLine.substr(0, nextLine.length - 1)
+        restrictIndent = docIndent + MD_INDENT
+      } else {
+        restrictIndent = -1
       }
       if (continueDescription) {
         if (wasEmpty) {
@@ -222,19 +238,35 @@ function processInput (options, string) {
     line = lineParts[2]
     if (docIndent === -1) {
       docIndent = lineIndent
-    } else if (lineIndent < docIndent) {
-      throw new CalError('invalid-indent', `The document's indent is derminded in the first line to be ${docIndent} spaces, it is ${lineIndent} spaces at line ${lineIndex}`, lineIndex, lineIndent)
-    }
-    if (processRoom(line, lineIndex)) {
-      return
     }
     if (room === null) {
       if (processHeader(line, lineIndex, lineIndent)) {
         return
       }
     } else {
-      if (processBody(line, lineIndex, lineIndent)) {
-        return
+      const formerRoom = roomData[roomData.length - 1]
+      if (restrictIndent !== -1) {
+        if (lineIndent !== restrictIndent) {
+          throw new CalError('invalid-indent', `Line is a continuation of the former line and as such is expected to have ${restrictIndent} spaces, but it has ${lineIndent}`, lineIndex, lineIndent)
+        }
+      }
+      if (!formerRoom) {
+        assertStrictIndent(lineIndex, lineIndent)
+      }
+      if (!formerRoom || lineIndent === docIndent) {
+        if (processRoom(line, lineIndex)) {
+          return true
+        }
+        if (processDateLine(line, lineIndex, lineIndent)) {
+          return true
+        }
+      } else {
+        if (lineIndent < docIndent + MD_INDENT) {
+          throw new CalError('invalid-indent', `The indentation of line needs to be at least ${docIndent + MD_INDENT} as it is content of the entry`, lineIndex, lineIndent)
+        }
+        if (processBody(formerRoom, line, lineIndex, lineIndent)) {
+          return true
+        }
       }
     }
     throw new CalError('invalid-data', `Unprocessable line "${line}"`, lineIndex, lineIndent)

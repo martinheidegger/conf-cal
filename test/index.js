@@ -1,4 +1,4 @@
-const test = require('tap').test
+const { test, only } = require('tap')
 const confCal = require('..')
 const apiKey = process.env['GOOGLE_API_KEY']
 
@@ -202,7 +202,27 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
   })
 })
 
-test('valid file with multiline entry with wrong indents', async t => {
+test('valid file with multiline entry with wrong date indent', async t => {
+  try {
+    await confCal({ apiKey }, `
+      Fancy title
+      on 2017/11/25
+      at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+      [roomA]
+        10:20-11:20 Event A
+    `)
+    t.fail('There should be an error when the indent is wrong')
+  } catch (e) {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
+      throw e
+    }
+    t.equals(e.line, 7)
+    t.equals(e.column, 9)
+  }
+})
+
+test('valid file with multiline entry with too short indents', async t => {
   try {
     await confCal({ apiKey }, `
       Fancy title
@@ -215,11 +235,32 @@ test('valid file with multiline entry with wrong indents', async t => {
     `)
     t.fail('There should be an error when the indent is wrong')
   } catch (e) {
-    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
       throw e
     }
     t.equals(e.line, 8)
     t.equals(e.column, 9)
+  }
+})
+
+test('valid file with multiline entry with too long indents', async t => {
+  try {
+    await confCal({ apiKey }, `
+      Fancy title
+      on 2017/11/25
+      at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+      [roomA]
+      10:20-11:20 Event A\\ by X
+           Fancy test
+    `)
+    t.fail('There should be an error when the indent is wrong')
+  } catch (e) {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
+      throw e
+    }
+    t.equals(e.line, 8)
+    t.equals(e.column, 12)
   }
 })
 
@@ -236,10 +277,10 @@ test('valid file with multiline entry with extension in next line', async t => {
     `)
     t.fail('There should be an error when the indent is wrong')
   } catch (e) {
-    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
       throw e
     }
-    t.equals(e.line, 7)
+    t.equals(e.line, 8)
     t.equals(e.column, 7)
   }
 })
@@ -258,10 +299,10 @@ test('valid file with multiline entry with extension in next line from a multili
     `)
     t.fail('There should be an error when the indent is wrong')
   } catch (e) {
-    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-data') {
+    if (!(e instanceof confCal.CalError) || e.code !== 'invalid-indent') {
       throw e
     }
-    t.equals(e.line, 8)
+    t.equals(e.line, 9)
     t.equals(e.column, 7)
   }
 })
@@ -476,4 +517,21 @@ test('follow up indents that less than the documents indents should thrown an er
     t.equals(e.line, 3)
     t.equals(e.column, 6)
   }
+})
+
+test('rooms need to respect indents', async t => {
+  const doc = await confCal({ apiKey }, `
+    Some Conference
+    on 2017/11/11
+    at Abbots place#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:00-12:00 eventA
+        [Some text]
+        more description
+  
+        [And even more text]
+    12:00-13:00 eventB #1-1
+  `)
+  t.deepEquals(Object.keys(doc.rooms), ['roomA'])
 })
