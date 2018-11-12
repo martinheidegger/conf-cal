@@ -63,7 +63,7 @@ function processInput (options, string) {
   let room = null
   let roomIndex = 0
   let roomData = null
-  let continueLine = true
+  let continueLine = false
   let indent = 0
   let continueDescription = false
   let wasEmpty = false
@@ -95,8 +95,8 @@ function processInput (options, string) {
 
   function processFirstLine (roomEntry, lineIndex, columOffset) {
     extractRoomInfo(roomEntry, lineIndex, columOffset)
-    const continueLine = !/\\$/ig.test(roomEntry.summary)
-    if (!continueLine) {
+    const continueLine = /\\$/ig.test(roomEntry.summary)
+    if (continueLine) {
       roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
     }
     return continueLine
@@ -138,7 +138,7 @@ function processInput (options, string) {
   function processDateLine (line, lineIndex) {
     const parts = /^((\s*)([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})\s*)(.*)\s*$/ig.exec(line)
     if (parts) {
-      if (!continueLine) {
+      if (continueLine) {
         throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[2].length)
       }
       indent = parts[2].length
@@ -182,7 +182,7 @@ function processInput (options, string) {
         throw new CalError('invalid-data', `Multiline indents need to be properly indented, expected indent: ${indent + MD_INDENT}, actual: ${contIndent}`, lineIndex - 1, contParts[1].length)
       }
       let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
-      if (continueLine) {
+      if (!continueLine) {
         const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
         if (listParts) {
           if (!formerRoom.entries) {
@@ -209,8 +209,8 @@ function processInput (options, string) {
       } else {
         nextLine = ' ' + nextLine
       }
-      continueLine = !/\\$/ig.test(nextLine)
-      if (!continueLine) {
+      continueLine = /\\$/ig.test(nextLine)
+      if (continueLine) {
         nextLine = nextLine.substr(0, nextLine.length - 1)
       }
       if (continueDescription) {
