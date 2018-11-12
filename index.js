@@ -64,7 +64,7 @@ function processInput (options, string) {
   let roomIndex = 0
   let roomData = null
   let continueLine = false
-  let indent = 0
+  let docIndent = -1
   let continueDescription = false
   let wasEmpty = false
   lines.forEach((line, lineIndex) => {
@@ -141,7 +141,6 @@ function processInput (options, string) {
       if (continueLine) {
         throw new CalError('invalid-data', 'Line tries to extend over entry boundaries', lineIndex - 1, parts[2].length)
       }
-      indent = parts[2].length
       const roomEntry = {
         auto_id: `${roomIndex}-${roomData.length + 1}`,
         start: `${doc.date}T${parts[3]}${parts[4]}00`,
@@ -164,6 +163,10 @@ function processInput (options, string) {
   }
 
   function processLine (line, lineIndex) {
+    const lineIndent = /^([ ]*)/g.exec(line)[0].length
+    if (docIndent === -1) {
+      docIndent = lineIndent
+    }
     if (processRoom(line, lineIndex)) {
       return
     }
@@ -176,7 +179,7 @@ function processInput (options, string) {
     const contParts = /^(\s+)(.*)$/ig.exec(line)
     const formerRoom = roomData[roomData.length - 1]
     const contIndent = contParts[1].length
-    if (contParts && contIndent >= (indent + MD_INDENT) && formerRoom) {
+    if (contParts && contIndent >= (docIndent + MD_INDENT) && formerRoom) {
       let nextLine = contParts[2].trim()
       if (contIndent < (indent + MD_INDENT)) {
         throw new CalError('invalid-data', `Multiline indents need to be properly indented, expected indent: ${indent + MD_INDENT}, actual: ${contIndent}`, lineIndex - 1, contParts[1].length)
