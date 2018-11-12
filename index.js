@@ -93,7 +93,7 @@ function processInput (options, string) {
     extractPerson(roomEntry)
   }
 
-  function processFirstLine (roomEntry, lineIndex, columOffset) {
+  function processFirstEntryLine (roomEntry, lineIndex, columOffset) {
     extractEntryMeta(roomEntry, lineIndex, columOffset)
     const continueLine = /\\$/ig.test(roomEntry.summary)
     if (continueLine) {
@@ -149,7 +149,7 @@ function processInput (options, string) {
         summary: parts[7]
       }
       continueDescription = false
-      continueLine = processFirstLine(roomEntry, lineIndex, parts[1].length)
+      continueLine = processFirstEntryLine(roomEntry, lineIndex, parts[1].length)
       roomEntry.summary = roomEntry.summary.trim()
       if (roomEntry.person) {
         persons[roomEntry.person] = true
@@ -196,7 +196,7 @@ function processInput (options, string) {
             entries[roomEntry.id] = roomEntry
           }
           entriesList.push(roomEntry)
-          continueLine = processFirstLine(roomEntry, lineIndex, listParts[1].length + contParts[1].length)
+          continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + contParts[1].length)
           roomEntry.summary = roomEntry.summary.trim()
           if (roomEntry.person) {
             persons[roomEntry.person] = true
