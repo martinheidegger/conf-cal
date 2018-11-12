@@ -98,6 +98,7 @@ test('valid file with rooms', async t => {
         start: '2017-11-25T16:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
         id: 'b',
+        hasCustomId: true,
         summary: 'Event B',
         person: null,
         lang: null
@@ -115,6 +116,7 @@ test('valid file with rooms', async t => {
         start: '2017-11-25T14:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
         id: 'd',
+        hasCustomId: true,
         person: null,
         summary: 'Event D',
         lang: null

@@ -18,6 +18,9 @@ module.exports = function slotsForRooms (timeZone, rooms) {
       if (entry.id) {
         newEntry.id = entry.id
       }
+      if (entry.hasCustomId) {
+        newEntry.hasCustomId = true
+      }
       if (entry.description) {
         newEntry.description = entry.description
       }

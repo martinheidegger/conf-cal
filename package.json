@@ -18,6 +18,7 @@
   "author": "Martin Heidegger <martin.heidegger@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "csv-stringify": "^4.3.1",
     "geo-tz": "^4.0.2",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.22.2",

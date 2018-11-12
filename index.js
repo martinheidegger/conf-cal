@@ -21,6 +21,8 @@ function applyAutoIds (entries, entriesList) {
       }
       entry.id = id
       entries[id] = entry
+    } else {
+      entry.hasCustomId = true
     }
     delete entry.auto_id
   }

@@ -203,6 +203,12 @@ at [Top of the World](https://maps.google.com/?q=Mount+Everest&ftid=0x39e854a215
   )
 
   t.equals(
+    theFlashTalk.hasCustomId,
+    true,
+    'When the id is set then hasCustomId is true instead of undefined.'
+  )
+
+  t.equals(
     theFlashTalk.description,
     `Its not always easy to travel quickly without colliding
 with things. Lightheartedly, the flash will reflect on
