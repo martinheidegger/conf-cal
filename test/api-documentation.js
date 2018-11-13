@@ -84,19 +84,25 @@ test('PROJECT USAGE', async t => {
   t.deepEquals(
     Object.keys(calendar.rooms),
     ['Main Room', 'Track A'],
-    'The calendar has a set of rooms'
-  )
-
-  t.deepEquals(
-    calendar.persons,
-    ['Batman', 'Wonder Woman', 'Wolverine', 'The Hulk', 'ウルトラマン', 'Super Man', 'The Flash'],
-    'There is also a handy list of all the persons that appear in this calendar.'
+    'The calendar has a handy set of rooms'
   )
 
   t.equals(
     calendar.rooms['Main Room'].length,
     3,
     'The room contains a list of entries for that room'
+  )
+
+  t.deepEquals(
+    Object.keys(calendar.persons),
+    ['Batman', 'Wonder Woman', 'Wolverine', 'The Hulk', 'ウルトラマン', 'Super Man', 'The Flash'],
+    'There is also a handy list of all the persons that appear in this calendar.'
+  )
+
+  t.equals(
+    calendar.persons['Batman'].length,
+    1,
+    '... and for every person there is an array of entries.'
   )
 
   t.equals(

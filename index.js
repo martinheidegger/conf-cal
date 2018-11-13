@@ -46,6 +46,16 @@ function processInput (options, string) {
   }
   const rooms = {}
   const persons = {}
+  function addToPersons (roomEntry) {
+    if (roomEntry.person) {
+      let roomEntries = persons[roomEntry.person]
+      if (!roomEntries) {
+        roomEntries = []
+        persons[roomEntry.person] = roomEntries
+      }
+      roomEntries.push(roomEntry)
+    }
+  }
   const entries = {}
   const entriesList = []
   const doc = {
@@ -167,9 +177,7 @@ function processInput (options, string) {
         restrictIndent = docIndent + MD_INDENT
       }
       roomEntry.summary = roomEntry.summary.trim()
-      if (roomEntry.person) {
-        persons[roomEntry.person] = true
-      }
+      addToPersons(roomEntry)
       if (roomEntry.id) {
         entries[roomEntry.id] = roomEntry
       }
@@ -202,9 +210,7 @@ function processInput (options, string) {
             restrictIndent = docIndent + MD_INDENT + MD_INDENT
           }
           roomEntry.summary = roomEntry.summary.trim()
-          if (roomEntry.person) {
-            persons[roomEntry.person] = true
-          }
+          addToPersons(roomEntry)
           roomEntry.parent = formerRoom
           formerRoom.entries.push(roomEntry)
           return true
@@ -297,7 +303,7 @@ function processInput (options, string) {
     .then(googleObject => {
       applyTimeZone(rooms, googleObject.timeZone)
       doc.googleObject = googleObject
-      doc.persons = Object.keys(persons)
+      doc.persons = persons
       applyAutoIds(entries, entriesList)
       doc.entries = entries
       return doc
