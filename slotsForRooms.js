@@ -13,6 +13,7 @@ module.exports = function slotsForRooms (timeZone, rooms) {
         summary: entry.summary,
         person: entry.person,
         lang: entry.lang || null,
+        room: entry.room,
         rowSpan: 1
       }
       if (entry.id) {
@@ -110,7 +111,8 @@ function insertBreaks (roomNames, slotList, indexMin, indexMax) {
           start: slotEntry.start,
           summary: null,
           person: null,
-          lang: null
+          lang: null,
+          room
         }
         if (roomEntry.summary === null) {
           roomEntry.end = slotEntry.end
@@ -154,6 +156,7 @@ function mergeEntries (slotList, index) {
       summary: null,
       person: null,
       lang: null,
+      room: null,
       rowSpan: 1
     }
     slotEntry.room = null
@@ -203,6 +206,7 @@ function mergeFullBreaks (slotList, iMin, iMax) {
               end: end,
               summary: null,
               person: null,
+              room,
               lang: null
             }
             let i = iMin + 1
@@ -227,6 +231,7 @@ function mergeFullBreaks (slotList, iMin, iMax) {
         summary: null,
         person: null,
         lang: null,
+        room: null,
         rowSpan: 1
       }
       slotEntry.room = null

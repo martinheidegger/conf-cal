@@ -169,7 +169,8 @@ function processInput (options, string) {
         auto_id: `${roomIndex}-${roomData.length + 1}`,
         start: `${doc.date}T${parts[2]}${parts[3]}00`,
         end: `${doc.date}T${parts[4]}${parts[5]}00`,
-        summary: parts[6]
+        summary: parts[6],
+        room
       }
       continueDescription = false
       continueLine = processFirstEntryLine(roomEntry, lineIndex, columnOffset + parts[1].length)
@@ -199,7 +200,8 @@ function processInput (options, string) {
           }
           roomEntry = {
             auto_id: `-${formerRoom.entries.length + 1}`,
-            summary: listParts[2]
+            summary: listParts[2],
+            room
           }
           if (roomEntry.id) {
             entries[roomEntry.id] = roomEntry

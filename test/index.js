@@ -93,7 +93,8 @@ test('valid file with rooms', async t => {
         id: '1-1',
         summary: 'Event A',
         person: 'X',
-        lang: 'ja'
+        lang: 'ja',
+        room: 'roomA'
       }, {
         start: '2017-11-25T16:20:00.000Z',
         end: '2017-11-25T18:00:00.000Z',
@@ -101,14 +102,16 @@ test('valid file with rooms', async t => {
         hasCustomId: true,
         summary: 'Event B',
         person: null,
-        lang: null
+        lang: null,
+        room: 'roomA'
       }, {
         start: '2017-11-25T18:10:00.000Z',
         end: '2017-11-26T01:00:00.000Z',
         id: '1-3',
         person: null,
         summary: 'Event C',
-        lang: null
+        lang: null,
+        room: 'roomA'
       }
     ],
     roomB: [
@@ -119,14 +122,16 @@ test('valid file with rooms', async t => {
         hasCustomId: true,
         person: null,
         summary: 'Event D',
-        lang: null
+        lang: null,
+        room: 'roomB'
       }, {
         start: '2017-11-25T18:10:00.000Z',
         end: '2017-11-25T20:00:00.000Z',
         id: '2-2',
         person: 'Y',
         summary: 'Event E',
-        lang: null
+        lang: null,
+        room: 'roomB'
       }
     ]
   })
@@ -159,7 +164,8 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
         id: '1-1',
         summary: 'Event A Fancy test\nEven line endings are funny',
         person: 'X',
-        lang: null
+        lang: null,
+        room: 'roomA'
       },
       {
         start: '2017-11-25T16:30:00.000Z',
@@ -167,7 +173,8 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
         id: '1-2',
         summary: 'Event B\nand more text it is',
         person: null,
-        lang: null
+        lang: null,
+        room: 'roomA'
       }
     ]
   })
@@ -200,13 +207,14 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
         id: '1-1',
         summary: 'Event A',
         entries: [
-          { id: '1-1-1', parentId: '1-1', summary: 'Event A1', person: 'X', lang: null },
-          { id: '1-1-2', parentId: '1-1', summary: 'Event A2', person: 'Y', lang: null },
-          { id: '1-1-3', parentId: '1-1', summary: 'Event A3 has more text', person: 'Z', lang: null },
-          { id: '1-1-4', parentId: '1-1', summary: 'Event A4', person: 'Z\'', lang: null }
+          { room: 'roomA', id: '1-1-1', parentId: '1-1', summary: 'Event A1', person: 'X', lang: null },
+          { room: 'roomA', id: '1-1-2', parentId: '1-1', summary: 'Event A2', person: 'Y', lang: null },
+          { room: 'roomA', id: '1-1-3', parentId: '1-1', summary: 'Event A3 has more text', person: 'Z', lang: null },
+          { room: 'roomA', id: '1-1-4', parentId: '1-1', summary: 'Event A4', person: 'Z\'', lang: null }
         ],
         person: null,
-        lang: null
+        lang: null,
+        room: 'roomA'
       }
     ]
   })
@@ -366,7 +374,7 @@ test('description in entry', async t => {
       end: '2017-11-11T16:20:00.000Z',
       room: 'roomA',
       entry:
-      { id: '1-1', start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X', lang: null, description: 'A simple description', rowSpan: 1 }
+      { room: 'roomA', id: '1-1', start: '2017-11-11T15:20:00.000Z', end: '2017-11-11T16:20:00.000Z', summary: 'Event A', person: 'X', lang: null, description: 'A simple description', rowSpan: 1 }
     }]
   })
 })
@@ -404,6 +412,7 @@ test('description in entry with multiline and paragraphs', async t => {
         id: '1-1',
         person: 'X',
         lang: null,
+        room: 'roomA',
         description: `A simple description\ncan be fun\nfor many  people\n\nBut Life can be tricky, take care!`,
         rowSpan: 1 }
     }]
@@ -434,14 +443,14 @@ test('slots for doc', async t => {
         end: '2017-11-11T17:00:00.000Z',
         room: 'roomA',
         entry:
-        { id: '1-1', start: '2017-11-11T15:00:00.000Z', end: '2017-11-11T17:00:00.000Z', summary: 'eventA', person: 'X', lang: null, rowSpan: 1 }
+        { room: 'roomA', id: '1-1', start: '2017-11-11T15:00:00.000Z', end: '2017-11-11T17:00:00.000Z', summary: 'eventA', person: 'X', lang: null, rowSpan: 1 }
       },
       {
         start: '2017-11-11T17:00:00.000Z',
         end: '2017-11-11T18:00:00.000Z',
         entries: {
-          roomA: { id: '1-2', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventB', person: null, lang: null, rowSpan: 1 },
-          roomB: { id: '2-1', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventC', person: 'Y', lang: null, rowSpan: 1 }
+          roomA: { room: 'roomA', id: '1-2', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventB', person: null, lang: null, rowSpan: 1 },
+          roomB: { room: 'roomB', id: '2-1', start: '2017-11-11T17:00:00.000Z', end: '2017-11-11T18:00:00.000Z', summary: 'eventC', person: 'Y', lang: null, rowSpan: 1 }
         }
       }
     ] })
