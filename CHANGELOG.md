@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/martinheidegger/conf-cal/compare/v2.12.1...v3.0.0) (2018-11-13)
+
+
+### Features
+
+* person based lookup ([096e9bd](https://github.com/martinheidegger/conf-cal/commit/096e9bd))
+* **data:** added property 'room' to entries in order to efficiently iterate over entries. ([00b52ac](https://github.com/martinheidegger/conf-cal/commit/00b52ac))
+
+
+### BREAKING CHANGES
+
+* persons now contains a map to looking all persons instead of a list of all persons in the calendar.
+
+
+
 <a name="2.12.1"></a>
 ## [2.12.1](https://github.com/martinheidegger/conf-cal/compare/v2.12.0...v2.12.1) (2018-11-12)
 
