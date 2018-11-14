@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.2"></a>
+## [3.0.2](https://github.com/martinheidegger/conf-cal/compare/v3.0.1...v3.0.2) (2018-11-14)
+
+
+### Bug Fixes
+
+* descriptions with lists create descriptions, no weird entries. ([24243fb](https://github.com/martinheidegger/conf-cal/commit/24243fb))
+* indentation errors with descriptions of subentries & description of an entry after the subentries list. ([92441f3](https://github.com/martinheidegger/conf-cal/commit/92441f3))
+
+
+
 <a name="3.0.1"></a>
 ## [3.0.1](https://github.com/martinheidegger/conf-cal/compare/v3.0.0...v3.0.1) (2018-11-14)
 
