@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/martinheidegger/conf-cal/compare/v3.0.0...v3.0.1) (2018-11-14)
+
+
+### Bug Fixes
+
+* consistent behaviour of continuation lines ([789004d](https://github.com/martinheidegger/conf-cal/commit/789004d))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/martinheidegger/conf-cal/compare/v2.12.1...v3.0.0) (2018-11-13)
 

@@ -1,6 +1,6 @@
 {
   "name": "conf-cal",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Convenient calendar for conferences",
   "main": "index.js",
   "scripts": {
