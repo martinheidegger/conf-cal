@@ -111,7 +111,9 @@ function processInput (options, string) {
 
   function processFirstEntryLine (roomEntry, lineIndex, columOffset) {
     extractEntryMeta(roomEntry, lineIndex, columOffset)
+
     const continueLine = /\\$/ig.test(roomEntry.summary)
+
     if (continueLine) {
       roomEntry.summary = roomEntry.summary.substr(0, roomEntry.summary.length - 1)
     }
@@ -172,12 +174,14 @@ function processInput (options, string) {
         summary: parts[6],
         room
       }
+
       continueDescription = false
       continueLine = processFirstEntryLine(roomEntry, lineIndex, columnOffset + parts[1].length)
       if (continueLine) {
         restrictIndent = docIndent + MD_INDENT
+      } else {
+        roomEntry.summary = roomEntry.summary.trim()
       }
-      roomEntry.summary = roomEntry.summary.trim()
       addToPersons(roomEntry)
       if (roomEntry.id) {
         entries[roomEntry.id] = roomEntry
@@ -210,21 +214,20 @@ function processInput (options, string) {
           continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + lineIndent)
           if (continueLine) {
             restrictIndent = docIndent + MD_INDENT + MD_INDENT
+          } else {
+            roomEntry.summary = roomEntry.summary.trim()
           }
-          roomEntry.summary = roomEntry.summary.trim()
           addToPersons(roomEntry)
           roomEntry.parent = formerRoom
           formerRoom.entries.push(roomEntry)
           return true
         }
         nextLine = '\n' + nextLine
-      } else {
-        nextLine = ' ' + nextLine
       }
       continueLine = /\\$/ig.test(nextLine)
       if (continueLine) {
         nextLine = nextLine.substr(0, nextLine.length - 1)
-        restrictIndent = docIndent + MD_INDENT
+        restrictIndent = lineIndent
       } else {
         restrictIndent = -1
       }
@@ -241,6 +244,9 @@ function processInput (options, string) {
         return true
       }
       roomEntry.summary += nextLine
+      if (!continueLine) {
+        roomEntry.summary = roomEntry.summary.trim()
+      }
       return true
     }
   }

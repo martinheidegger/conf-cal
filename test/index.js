@@ -144,9 +144,9 @@ on 2017/11/25
 at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
 
 [roomA]
-10:20-11:20 Event A\\ by X
+10:20-11:20 Event A \\ by X
     Fancy test
-    Even line endings\\
+    Even line endings \\
     are funny
 11:30-12:30 Event B
     and more text it is
@@ -190,7 +190,7 @@ at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
 10:20-11:20 Event A
     - Event A1 by X
     - Event A2 by Y
-    - Event A3\\ by Z
+    - Event A3 \\ by Z
         has more text
     - Event A4 by Z'
   `)
@@ -413,10 +413,36 @@ test('description in entry with multiline and paragraphs', async t => {
         person: 'X',
         lang: null,
         room: 'roomA',
-        description: `A simple description\ncan be fun\nfor many  people\n\nBut Life can be tricky, take care!`,
+        description: `A simple description\ncan be fun\nfor many people\n\nBut Life can be tricky,take care!`,
         rowSpan: 1 }
     }]
   })
+})
+
+test('description in entry with multiline and paragraphs', async t => {
+  const doc = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A by X
+
+        - Subentry by Y
+
+            A simple description
+            can be fun
+            for many \\
+            people
+
+            But Life can be tricky,\\
+            take care!
+  `)
+  t.equals(doc.entries['1-1-1'].description, `A simple description
+can be fun
+for many people
+
+But Life can be tricky,take care!`)
 })
 
 test('slots for doc', async t => {
