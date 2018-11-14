@@ -38,6 +38,12 @@ test('to translation csv example', async t => {
     [roomB]
     10:20-11:20 Q&A
 
+        - We have lists by Z
+
+            with descriptions
+
+        - And more list entries
+
         This is different from Q&A than in the other room.
 
     11:20-12:20 Reflections
@@ -58,6 +64,9 @@ ID[custom-id] - description,Special id to be used for translation
 roomA: Reflections - summary,Reflections
 roomB#1: Reflections - summary,Reflections
 roomB#2: Reflections - summary,Reflections
+#1 by Z - summary,We have lists
+#1 by Z - description,with descriptions
+And more list entries - summary,And more list entries
 `)
 })
 
