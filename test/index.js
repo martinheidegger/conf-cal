@@ -445,6 +445,50 @@ for many people
 But Life can be tricky,take care!`)
 })
 
+test('Multiple sub-entries should have descriptions', async t => {
+  const doc = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    17:00-18:00 Lightning Talks
+
+        - Subentry 1 \\
+            some Text
+
+            Some description
+
+        - Subentry 2 \\
+            fancy party
+
+            Another description
+  `)
+  t.equals(doc.entries['1-1-1'].summary, `Subentry 1 some Text`)
+  t.equals(doc.entries['1-1-1'].description, `Some description`)
+  t.equals(doc.entries['1-1-2'].summary, `Subentry 2 fancy party`)
+  t.equals(doc.entries['1-1-2'].description, `Another description`)
+})
+
+test('list and description', async t => {
+  const doc = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    17:00-18:00 Lightning Talks
+
+        - Subentry 1
+
+            Some description
+
+        More description here.
+  `)
+  t.equals(doc.entries['1-1'].description, 'More description here.')
+  t.equals(doc.entries['1-1-1'].description, 'Some description')
+})
+
 test('slots for doc', async t => {
   const doc = await confCal({ apiKey }, `
     Some Conference

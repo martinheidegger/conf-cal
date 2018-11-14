@@ -77,6 +77,8 @@ function processInput (options, string) {
   let roomData = null
   let continueLine = false
   let docIndent = -1
+  let entryIndent = -1
+  let subEntryIndent = -1
   let restrictIndent = -1
   let continueDescription = false
   let wasEmpty = false
@@ -178,7 +180,7 @@ function processInput (options, string) {
       continueDescription = false
       continueLine = processFirstEntryLine(roomEntry, lineIndex, columnOffset + parts[1].length)
       if (continueLine) {
-        restrictIndent = docIndent + MD_INDENT
+        restrictIndent = entryIndent
       } else {
         roomEntry.summary = roomEntry.summary.trim()
       }
@@ -192,63 +194,63 @@ function processInput (options, string) {
     }
   }
 
-  function processBody (formerRoom, line, lineIndex, lineIndent) {
-    if (lineIndent >= (docIndent + MD_INDENT) && formerRoom) {
-      let nextLine = line.trim()
-      let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
-      if (!continueLine) {
-        const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
-        if (listParts) {
-          if (!formerRoom.entries) {
-            formerRoom.entries = []
-          }
-          roomEntry = {
-            auto_id: `-${formerRoom.entries.length + 1}`,
-            summary: listParts[2],
-            room
-          }
-          if (roomEntry.id) {
-            entries[roomEntry.id] = roomEntry
-          }
-          entriesList.push(roomEntry)
-          continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + lineIndent)
-          if (continueLine) {
-            restrictIndent = docIndent + MD_INDENT + MD_INDENT
-          } else {
-            roomEntry.summary = roomEntry.summary.trim()
-          }
-          addToPersons(roomEntry)
-          roomEntry.parent = formerRoom
-          formerRoom.entries.push(roomEntry)
-          return true
+  function finishSummary (roomEntry) {
+    roomEntry.summary = roomEntry.summary.trim()
+  }
+
+  function processBody (roomEntry, formerRoom, line, lineIndex, lineIndent, allowSubentries) {
+    let nextLine = line.trim()
+    if (!continueLine) {
+      const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
+      if (listParts && allowSubentries) {
+        if (!formerRoom.entries) {
+          formerRoom.entries = []
         }
+        roomEntry = {
+          auto_id: `-${formerRoom.entries.length + 1}`,
+          summary: listParts[2],
+          room
+        }
+        if (roomEntry.id) {
+          entries[roomEntry.id] = roomEntry
+        }
+        entriesList.push(roomEntry)
+        continueDescription = false
+        continueLine = processFirstEntryLine(roomEntry, lineIndex, listParts[1].length + lineIndent)
+        if (!continueLine) {
+          finishSummary(roomEntry)
+        }
+        addToPersons(roomEntry)
+        roomEntry.parent = formerRoom
+        formerRoom.entries.push(roomEntry)
+        return true
+      }
+      nextLine = '\n' + nextLine
+    }
+    continueLine = /\\$/ig.test(nextLine)
+    if (continueLine) {
+      nextLine = nextLine.substr(0, nextLine.length - 1)
+      restrictIndent = lineIndent
+    } else {
+      restrictIndent = -1
+    }
+    if (continueDescription) {
+      if (wasEmpty) {
         nextLine = '\n' + nextLine
       }
-      continueLine = /\\$/ig.test(nextLine)
-      if (continueLine) {
-        nextLine = nextLine.substr(0, nextLine.length - 1)
-        restrictIndent = lineIndent
-      } else {
-        restrictIndent = -1
-      }
-      if (continueDescription) {
-        if (wasEmpty) {
-          nextLine = '\n' + nextLine
-        }
-        roomEntry.description += nextLine
-        return true
-      }
-      if (wasEmpty) {
-        continueDescription = true
-        roomEntry.description = nextLine.substr(1)
-        return true
-      }
-      roomEntry.summary += nextLine
-      if (!continueLine) {
-        roomEntry.summary = roomEntry.summary.trim()
-      }
+      roomEntry.description += nextLine
       return true
     }
+    if (wasEmpty) {
+      roomEntry.description = nextLine.substr(1)
+      continueDescription = true
+      return true
+    }
+    roomEntry.summary += nextLine
+    if (!continueLine) {
+      finishSummary(roomEntry)
+    }
+    return true
   }
 
   function processLine (line, lineIndex) {
@@ -257,6 +259,8 @@ function processInput (options, string) {
     line = lineParts[2]
     if (docIndent === -1) {
       docIndent = lineIndent
+      entryIndent = docIndent + MD_INDENT
+      subEntryIndent = docIndent + MD_INDENT * 2
     }
     if (room === null) {
       if (processHeader(line, lineIndex, lineIndent)) {
@@ -280,10 +284,21 @@ function processInput (options, string) {
           return true
         }
       } else {
-        if (lineIndent < docIndent + MD_INDENT) {
-          throw new CalError('invalid-indent', `The indentation of line needs to be at least ${docIndent + MD_INDENT} as it is content of the entry`, lineIndex, lineIndent)
+        let roomEntry = formerRoom.entries ? formerRoom.entries[formerRoom.entries.length - 1] : formerRoom
+        let expectedIndent = entryIndent
+        if (roomEntry.parent) {
+          if (lineIndent < subEntryIndent && !continueLine) {
+            roomEntry = formerRoom
+            continueDescription = false
+          } else {
+            expectedIndent = subEntryIndent
+          }
         }
-        if (processBody(formerRoom, line, lineIndex, lineIndent)) {
+        const allowSubentries = !roomEntry.parent
+        if (lineIndent < expectedIndent) {
+          throw new CalError('invalid-indent', `The indentation of line needs to be at least ${expectedIndent} as it is content of the entry but is ${lineIndent}`, lineIndex, lineIndent)
+        }
+        if (processBody(roomEntry, formerRoom, line, lineIndex, lineIndent, allowSubentries)) {
           return true
         }
       }
