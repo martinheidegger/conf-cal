@@ -7,7 +7,7 @@ if (!apiKey) {
   throw new Error('To run the unit test you need to set the GOOGLE_API_KEY environment variable')
 }
 
-test('', async t => {
+test('to translation csv example', async t => {
   const cal = await confCal({ apiKey }, `
     Fancy title
     on 2017/11/11
@@ -58,5 +58,35 @@ ID[custom-id] - description,Special id to be used for translation
 roomA: Reflections - summary,Reflections
 roomB#1: Reflections - summary,Reflections
 roomB#2: Reflections - summary,Reflections
+`)
+})
+
+test('headers are correct', async t => {
+  const cal = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A by X
+  `)
+  t.equals(toTranslationCSV(cal, { header: true }), `key,source
+#1 by X - summary,Event A
+`)
+})
+
+test('default language support', async t => {
+  const cal = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    10:20-11:20 Event A by X
+    10:20-11:20 Event B by Y in en
+  `)
+  t.equals(toTranslationCSV(cal, 'ja', { header: true }), `key,source,ja,en
+#1 by X - summary,Event A,Event A,
+#1 by Y - summary,Event B,,Event B
 `)
 })
