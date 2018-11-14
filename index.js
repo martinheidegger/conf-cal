@@ -182,7 +182,7 @@ function processInput (options, string) {
       if (continueLine) {
         restrictIndent = entryIndent
       } else {
-        roomEntry.summary = roomEntry.summary.trim()
+        finishSummary(roomEntry)
       }
       addToPersons(roomEntry)
       if (roomEntry.id) {
@@ -199,7 +199,7 @@ function processInput (options, string) {
   }
 
   function processBody (roomEntry, formerRoom, line, lineIndex, lineIndent, allowSubentries) {
-    let nextLine = line.trim()
+    let nextLine = line.replace(/(\s*)$/, '')
     if (!continueLine) {
       const listParts = /^(-\s+)(.*)$/g.exec(nextLine)
       if (listParts && allowSubentries) {
@@ -294,11 +294,14 @@ function processInput (options, string) {
             expectedIndent = subEntryIndent
           }
         }
-        const allowSubentries = !roomEntry.parent
+        const allowSubentries = (!roomEntry.parent) && !roomEntry.description
         if (lineIndent < expectedIndent) {
           throw new CalError('invalid-indent', `The indentation of line needs to be at least ${expectedIndent} as it is content of the entry but is ${lineIndent}`, lineIndex, lineIndent)
         }
-        if (processBody(roomEntry, formerRoom, line, lineIndex, lineIndent, allowSubentries)) {
+        if (lineIndent > expectedIndent) {
+          line = spaces(lineIndent - expectedIndent) + line
+        }
+        if (processBody(roomEntry, formerRoom, line, lineIndex, expectedIndent, allowSubentries)) {
           return true
         }
       }

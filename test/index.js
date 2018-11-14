@@ -489,6 +489,29 @@ test('list and description', async t => {
   t.equals(doc.entries['1-1-1'].description, 'Some description')
 })
 
+test('description and list', async t => {
+  const doc = await confCal({ apiKey }, `
+    Fancy title
+    on 2017/11/11
+    at Fiery Hell#ChIJca1Xh1c0I4gRimFWCXd5UNQ
+
+    [roomA]
+    17:00-18:00 Lightning Talks
+
+        Some description here.
+
+        - Subentry 1
+
+            more description
+  `)
+  t.equals(doc.entries['1-1'].description, `Some description here.
+
+- Subentry 1
+
+    more description`)
+  t.equals(doc.entries['1-1-1'], undefined)
+})
+
 test('slots for doc', async t => {
   const doc = await confCal({ apiKey }, `
     Some Conference
